@@ -7,16 +7,8 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.create(comment);
     }
 
-    static createMany(comments: IComment[]) {
-        return CommentRepository.createMany(comments);
-    }
-
     static updateById(id: string, comment: Partial<IComment>) {
         return CommentRepository.updateById(id, comment);
-    }
-
-    static updateMany(commentFilter: Partial<IComment>, comment: Partial<IComment>) {
-        return CommentRepository.updateMany(commentFilter, comment);
     }
 
     static deleteById(id: string) {
@@ -31,8 +23,8 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.getOne(commentFilter);
     }
 
-    static getMany(commentFilter: Partial<IComment>) {
-        return CommentRepository.getMany(commentFilter);
+    static getMany(commentFilter: Partial<IComment>, startIndex: number, endIndex: number) {
+        return CommentRepository.getMany(commentFilter, startIndex, endIndex);
     }
 
     static getAmount(commentFilter: Partial<IComment>) {
