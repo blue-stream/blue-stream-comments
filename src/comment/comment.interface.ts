@@ -1,4 +1,7 @@
 export interface IComment {
     id?: string;
-    property: string;
+    video: string;
+    user: string;
+    text: string;
+    parent?: string;
 }
