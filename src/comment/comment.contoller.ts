@@ -10,24 +10,9 @@ export class CommentController {
         res.json(await CommentManager.create(req.body.comment));
     }
 
-    static async createMany(req: Request, res: Response) {
-        res.json(await CommentManager.createMany(req.body.comments));
-    }
-
     static async updateById(req: Request, res: Response) {
         const updated = await CommentManager.updateById(req.params.id, req.body.comment);
         if (!updated) {
-            throw new CommentNotFoundError();
-        }
-
-        res.json(updated);
-    }
-
-    static async updateMany(req: Request, res: Response) {
-
-        const updated: UpdateResponse = await CommentManager.updateMany(req.body.commentFilter, req.body.comment);
-
-        if (updated.n === 0) {
             throw new CommentNotFoundError();
         }
 
@@ -62,7 +47,7 @@ export class CommentController {
     }
 
     static async getMany(req: Request, res: Response) {
-        res.json(await CommentManager.getMany(req.query));
+        res.json(await CommentManager.getMany(req.query, req.query.startIndex, req.query.endIndex));
     }
 
     static async getAmount(req: Request, res: Response) {
