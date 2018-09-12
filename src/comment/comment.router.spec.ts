@@ -2,73 +2,66 @@ import * as request from 'supertest';
 import { expect } from 'chai';
 import * as mongoose from 'mongoose';
 
-import { IFeatureName } from './FEATURE_NAME.interface';
+import { IComment } from './comment.interface';
 import { Server } from '../server';
-import { PropertyInvalidError, IdInvalidError, FeatureNameNotFoundError } from '../utils/errors/userErrors';
+import { PropertyInvalidError, IdInvalidError, CommentNotFoundError } from '../utils/errors/userErrors';
 import { config } from '../config';
-import { FeatureNameManager } from './FEATURE_NAME.manager';
+import { CommentManager } from './comment.manager';
 import { sign } from 'jsonwebtoken';
 
-describe('FeatureName Module', function () {
+describe('Comment Module', function () {
     let server: Server;
     const validProppertyString: string = '12345';
-    const featureName: IFeatureName = {
+    const comment: IComment = {
         property: validProppertyString,
     };
     const authorizationHeader = `Bearer ${sign('mock-user', config.authentication.secret)}`;
     const invalidId: string = '1';
     const invalidProppertyString: string = '123456789123456789';
-    const invalidFeatureName: IFeatureName = {
+    const invalidComment: IComment = {
         property: invalidProppertyString,
     };
-    // <MongoDB>
+    
 
-    const featureName2: IFeatureName = {
+    const comment2: IComment = {
         property: '45678',
     };
-    const featureName3: IFeatureName = {
+    const comment3: IComment = {
         property: '6789',
     };
 
-    const unexistingFeatureName: IFeatureName = {
+    const unexistingComment: IComment = {
         property: 'a',
     };
 
-    const featureNames: IFeatureName[] =
-        [featureName, featureName2, featureName3, featureName3];
+    const comments: IComment[] =
+        [comment, comment2, comment3, comment3];
 
-    const invalidFeatureNames: IFeatureName[] =
-        [featureName, invalidFeatureName, featureName3];
+    const invalidComments: IComment[] =
+        [comment, invalidComment, comment3];
 
-    // </MongoDB>
     before(async function () {
-        // <MongoDB>
+        
         await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, { useNewUrlParser: true });
-        // </MongoDB>
         server = Server.bootstrap();
     });
 
-    // <MongoDB>
+    
     after(async function () {
         await mongoose.connection.db.dropDatabase();
     });
-    // </MongoDB>
-
-    describe('#POST /api/featureName/', function () {
+    describe('#POST /api/comment/', function () {
         context('When request is valid', function () {
-            // <MongoDB>
+            
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
             });
-            // </MongoDB>
-
-            it('Should return created featureName', function (done: MochaDone) {
+            it('Should return created comment', function (done: MochaDone) {
                 request(server.app)
-                    .post('/api/featureName/')
-                    .send({ featureName })
-                    // <Authentication using JWT>
+                    .post('/api/comment/')
+                    .send({ comment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -85,19 +78,16 @@ describe('FeatureName Module', function () {
         });
 
         context('When request is invalid', function () {
-            // <MongoDB>
+            
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
             });
-            // </MongoDB>
-
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .post('/api/featureName/')
-                    .send({ featureName: invalidFeatureName })
-                    // <Authentication using JWT>
+                    .post('/api/comment/')
+                    .send({ comment: invalidComment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -113,20 +103,19 @@ describe('FeatureName Module', function () {
             });
         });
     });
-    // <MongoDB>
-    describe('#POST /api/featureName/many/', function () {
+    
+    describe('#POST /api/comment/many/', function () {
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
             });
 
-            it('Should return created featureName', function (done: MochaDone) {
+            it('Should return created comment', function (done: MochaDone) {
                 request(server.app)
-                    .post('/api/featureName/many/')
-                    .send({ featureNames })
-                    // <Authentication using JWT>
+                    .post('/api/comment/many/')
+                    .send({ comments })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -135,7 +124,7 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('array');
-                        expect(res.body[1]).to.have.property('property', featureNames[1].property);
+                        expect(res.body[1]).to.have.property('property', comments[1].property);
 
                         done();
                     });
@@ -149,11 +138,10 @@ describe('FeatureName Module', function () {
 
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .post('/api/featureName/many/')
-                    .send({ featureNames: invalidFeatureNames })
-                    // <Authentication using JWT>
+                    .post('/api/comment/many/')
+                    .send({ comments: invalidComments })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -170,22 +158,21 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#PUT /api/featureName/many', function () {
-        let returnedFeatureNames: any;
+    describe('#PUT /api/comment/many', function () {
+        let returnedComments: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureNames = await FeatureNameManager.createMany(featureNames);
+                returnedComments = await CommentManager.createMany(comments);
             });
 
-            it('Should return updated featureName', function (done: MochaDone) {
+            it('Should return updated comment', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/many`)
-                    .send({ featureName: featureName2, featureNameFilter: featureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/many`)
+                    .send({ comment: comment2, commentFilter: comment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -203,19 +190,18 @@ describe('FeatureName Module', function () {
 
             it('Should return 404 error status code', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/many`)
-                    .send({ featureName, featureNameFilter: unexistingFeatureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/many`)
+                    .send({ comment, commentFilter: unexistingComment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(404)
                     .end((error: Error, res: request.Response) => {
                         expect(res).to.exist;
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', FeatureNameNotFoundError.name);
-                        expect(res.body).to.have.property('message', new FeatureNameNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -225,16 +211,15 @@ describe('FeatureName Module', function () {
         context('When request is invalid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureNames = await FeatureNameManager.createMany(featureNames);
+                returnedComments = await CommentManager.createMany(comments);
             });
 
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/many`)
-                    .send({ featureName: invalidFeatureName, featureNameFilter: featureName2 })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/many`)
+                    .send({ comment: invalidComment, commentFilter: comment2 })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -251,22 +236,21 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#PUT /api/featureName/:id', function () {
-        let returnedFeatureName: any;
+    describe('#PUT /api/comment/:id', function () {
+        let returnedComment: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
-            it('Should return updated featureName', function (done: MochaDone) {
+            it('Should return updated comment', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/${returnedFeatureName.id}`)
-                    .send({ featureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/${returnedComment.id}`)
+                    .send({ comment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -275,7 +259,7 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('property', featureName.property);
+                        expect(res.body).to.have.property('property', comment.property);
 
                         done();
                     });
@@ -283,11 +267,10 @@ describe('FeatureName Module', function () {
 
             it('Should return error status when id is not found', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/${new mongoose.Types.ObjectId()}`)
-                    .send({ featureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/${new mongoose.Types.ObjectId()}`)
+                    .send({ comment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(404)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -295,8 +278,8 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', FeatureNameNotFoundError.name);
-                        expect(res.body).to.have.property('message', new FeatureNameNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -306,16 +289,15 @@ describe('FeatureName Module', function () {
         context('When request is invalid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
             it('Should return error status when id is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/2`)
-                    .send({ featureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/2`)
+                    .send({ comment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -332,11 +314,10 @@ describe('FeatureName Module', function () {
 
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .put(`/api/featureName/${returnedFeatureName.id}`)
-                    .send({ featureName: invalidFeatureName })
-                    // <Authentication using JWT>
+                    .put(`/api/comment/${returnedComment.id}`)
+                    .send({ comment: invalidComment })
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -353,21 +334,20 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#DELETE /api/featureName/:id', function () {
-        let returnedFeatureName: any;
+    describe('#DELETE /api/comment/:id', function () {
+        let returnedComment: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
-            it('Should return updated featureName', function (done: MochaDone) {
+            it('Should return updated comment', function (done: MochaDone) {
                 request(server.app)
-                    .delete(`/api/featureName/${returnedFeatureName.id}`)
-                    // <Authentication using JWT>
+                    .delete(`/api/comment/${returnedComment.id}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -376,7 +356,7 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('property', featureName.property);
+                        expect(res.body).to.have.property('property', comment.property);
 
                         done();
                     });
@@ -384,10 +364,9 @@ describe('FeatureName Module', function () {
 
             it('Should return error status when id not found', function (done: MochaDone) {
                 request(server.app)
-                    .delete(`/api/featureName/${new mongoose.Types.ObjectId()}`)
-                    // <Authentication using JWT>
+                    .delete(`/api/comment/${new mongoose.Types.ObjectId()}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(404)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -395,8 +374,8 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', FeatureNameNotFoundError.name);
-                        expect(res.body).to.have.property('message', new FeatureNameNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -406,15 +385,14 @@ describe('FeatureName Module', function () {
         context('When request is invalid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
             it('Should return error status when id is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .delete(`/api/featureName/${invalidId}`)
-                    // <Authentication using JWT>
+                    .delete(`/api/comment/${invalidId}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -431,21 +409,20 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#GET /api/featureName/one', function () {
-        let returnedFeatureNames: any;
+    describe('#GET /api/comment/one', function () {
+        let returnedComments: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureNames = await FeatureNameManager.createMany(featureNames);
+                returnedComments = await CommentManager.createMany(comments);
             });
 
-            it('Should return featureName', function (done: MochaDone) {
+            it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/one?property=${featureName3.property}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/one?property=${comment3.property}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -454,18 +431,17 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('property', featureNames[2].property);
+                        expect(res.body).to.have.property('property', comments[2].property);
 
                         done();
                     });
             });
 
-            it('Should return error when featureName not found', function (done: MochaDone) {
+            it('Should return error when comment not found', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/one?property=${unexistingFeatureName.property}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/one?property=${unexistingComment.property}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(404)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -473,8 +449,8 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', FeatureNameNotFoundError.name);
-                        expect(res.body).to.have.property('message', new FeatureNameNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -482,21 +458,20 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#GET /api/featureName/many', function () {
-        let returnedFeatureNames: any;
+    describe('#GET /api/comment/many', function () {
+        let returnedComments: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureNames = await FeatureNameManager.createMany(featureNames);
+                returnedComments = await CommentManager.createMany(comments);
             });
 
-            it('Should return featureName', function (done: MochaDone) {
+            it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/many?property=${featureName3.property}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/many?property=${comment3.property}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -505,7 +480,7 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('array');
-                        expect(res.body[1]).to.have.property('property', featureNames[2].property);
+                        expect(res.body[1]).to.have.property('property', comments[2].property);
 
                         done();
                     });
@@ -513,21 +488,20 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#GET /api/featureName/amount', function () {
-        let returnedFeatureNames: any;
+    describe('#GET /api/comment/amount', function () {
+        let returnedComments: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureNames = await FeatureNameManager.createMany(featureNames);
+                returnedComments = await CommentManager.createMany(comments);
             });
 
-            it('Should return featureName', function (done: MochaDone) {
+            it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/amount?property=${featureName3.property}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/amount?property=${comment3.property}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -543,21 +517,20 @@ describe('FeatureName Module', function () {
         });
     });
 
-    describe('#GET /api/featureName/:id', function () {
-        let returnedFeatureName: any;
+    describe('#GET /api/comment/:id', function () {
+        let returnedComment: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
-            it('Should return featureName', function (done: MochaDone) {
+            it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/${returnedFeatureName.id}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/${returnedComment.id}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -566,18 +539,17 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('property', featureName.property);
+                        expect(res.body).to.have.property('property', comment.property);
 
                         done();
                     });
             });
 
-            it('Should return error when featureName not found', function (done: MochaDone) {
+            it('Should return error when comment not found', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/${new mongoose.Types.ObjectId()}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/${new mongoose.Types.ObjectId()}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(404)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -585,8 +557,8 @@ describe('FeatureName Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', FeatureNameNotFoundError.name);
-                        expect(res.body).to.have.property('message', new FeatureNameNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -596,15 +568,14 @@ describe('FeatureName Module', function () {
         context('When request is invalid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedFeatureName = await FeatureNameManager.create(featureName);
+                returnedComment = await CommentManager.create(comment);
             });
 
             it('Should return error status when id is invalid', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/featureName/${invalidId}`)
-                    // <Authentication using JWT>
+                    .get(`/api/comment/${invalidId}`)
+                    
                     .set({ authorization: authorizationHeader })
-                    // </Authentication using JWT>
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end((error: Error, res: request.Response) => {
@@ -620,5 +591,4 @@ describe('FeatureName Module', function () {
             });
         });
     });
-    // </MongoDB>
-});
+    });

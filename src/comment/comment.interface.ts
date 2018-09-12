@@ -1,4 +1,4 @@
-export interface IFeatureName {
+export interface IComment {
     id?: string;
     property: string;
 }

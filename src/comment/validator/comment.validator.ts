@@ -1,38 +1,38 @@
 import { Request, Response, NextFunction } from 'express';
-import { FeatureNameValidatons } from './FEATURE_NAME.validations';
+import { CommentValidatons } from './comment.validations';
 import { PropertyInvalidError, IdInvalidError } from '../../utils/errors/userErrors';
-import { IFeatureName } from '../FEATURE_NAME.interface';
+import { IComment } from '../comment.interface';
 
-export class FeatureNameValidator {
+export class CommentValidator {
 
     static canCreate(req: Request, res: Response, next: NextFunction) {
-        next(FeatureNameValidator.validateProperty(req.body.featureName.property));
+        next(CommentValidator.validateProperty(req.body.comment.property));
     }
 
     static canCreateMany(req: Request, res: Response, next: NextFunction) {
-        const propertiesValidations: (Error | undefined)[] = req.body.featureNames.map((featureName: IFeatureName) => {
-            return FeatureNameValidator.validateProperty(featureName.property);
+        const propertiesValidations: (Error | undefined)[] = req.body.comments.map((comment: IComment) => {
+            return CommentValidator.validateProperty(comment.property);
         });
 
-        next(FeatureNameValidator.getNextValueFromArray(propertiesValidations));
+        next(CommentValidator.getNextValueFromArray(propertiesValidations));
     }
 
     static canUpdateById(req: Request, res: Response, next: NextFunction) {
         next(
-            FeatureNameValidator.validateId(req.params.id) ||
-            FeatureNameValidator.validateProperty(req.body.featureName.property));
+            CommentValidator.validateId(req.params.id) ||
+            CommentValidator.validateProperty(req.body.comment.property));
     }
 
     static canUpdateMany(req: Request, res: Response, next: NextFunction) {
-        next(FeatureNameValidator.validateProperty(req.body.featureName.property));
+        next(CommentValidator.validateProperty(req.body.comment.property));
     }
 
     static canDeleteById(req: Request, res: Response, next: NextFunction) {
-        next(FeatureNameValidator.validateId(req.params.id));
+        next(CommentValidator.validateId(req.params.id));
     }
 
     static canGetById(req: Request, res: Response, next: NextFunction) {
-        next(FeatureNameValidator.validateId(req.params.id));
+        next(CommentValidator.validateId(req.params.id));
     }
 
     static canGetOne(req: Request, res: Response, next: NextFunction) {
@@ -48,7 +48,7 @@ export class FeatureNameValidator {
     }
 
     private static validateProperty(property: string) {
-        if (!FeatureNameValidatons.isPropertyValid(property)) {
+        if (!CommentValidatons.isPropertyValid(property)) {
             return new PropertyInvalidError();
         }
 
@@ -56,7 +56,7 @@ export class FeatureNameValidator {
     }
 
     private static validateId(id: string) {
-        if (!FeatureNameValidatons.isIdValid(id)) {
+        if (!CommentValidatons.isIdValid(id)) {
             return new IdInvalidError();
         }
 

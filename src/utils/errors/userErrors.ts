@@ -12,8 +12,8 @@ export class IdInvalidError extends UserError {
     }
 }
 
-export class FeatureNameNotFoundError extends UserError {
+export class CommentNotFoundError extends UserError {
     constructor(message?: string) {
-        super(message || `FeatureName not found`, 404);
+        super(message || `Comment not found`, 404);
     }
 }

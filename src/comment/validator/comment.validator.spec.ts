@@ -1,14 +1,14 @@
 import { expect } from 'chai';
 import { Types } from 'mongoose';
-import { FeatureNameValidator } from './FEATURE_NAME.validator';
-import { ValidRequestMocks, responseMock } from './FEATURE_NAME.mocks';
+import { CommentValidator } from './comment.validator';
+import { ValidRequestMocks, responseMock } from './comment.mocks';
 import { PropertyInvalidError, IdInvalidError } from '../../utils/errors/userErrors';
 
-describe('FeatureName Validator Middleware', function () {
+describe('Comment Validator Middleware', function () {
     describe('Create Validator', function () {
         context('When valid arguments are passed', function () {
             it('Should not throw an error', function () {
-                FeatureNameValidator.canCreate(new ValidRequestMocks().create, responseMock, (error: Error) => {
+                CommentValidator.canCreate(new ValidRequestMocks().create, responseMock, (error: Error) => {
                     expect(error).to.not.exist;
                 });
             });
@@ -17,9 +17,9 @@ describe('FeatureName Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an PropertyInvalidError When property is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.featureName.property = undefined;
+                invalidRequestMock.body.comment.property = undefined;
 
-                FeatureNameValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -27,9 +27,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.featureName.property = null;
+                invalidRequestMock.body.comment.property = null;
 
-                FeatureNameValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -37,9 +37,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.featureName.property = '122223344214142';
+                invalidRequestMock.body.comment.property = '122223344214142';
 
-                FeatureNameValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -50,7 +50,7 @@ describe('FeatureName Validator Middleware', function () {
     describe('CreateMany Validator', function () {
         context('When valid arguments are passed', function () {
             it('Should not throw an error', function () {
-                FeatureNameValidator.canCreateMany(new ValidRequestMocks().createMany, responseMock, (error: Error) => {
+                CommentValidator.canCreateMany(new ValidRequestMocks().createMany, responseMock, (error: Error) => {
                     expect(error).to.not.exist;
                 });
             });
@@ -59,9 +59,9 @@ describe('FeatureName Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an PropertyInvalidError When property is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().createMany;
-                invalidRequestMock.body.featureNames[1].property = undefined;
+                invalidRequestMock.body.comments[1].property = undefined;
 
-                FeatureNameValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -69,9 +69,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().createMany;
-                invalidRequestMock.body.featureNames[1].property = null;
+                invalidRequestMock.body.comments[1].property = null;
 
-                FeatureNameValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -79,9 +79,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().createMany;
-                invalidRequestMock.body.featureNames[1].property = '21412412421412414214';
+                invalidRequestMock.body.comments[1].property = '21412412421412414214';
 
-                FeatureNameValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canCreateMany(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -92,7 +92,7 @@ describe('FeatureName Validator Middleware', function () {
     describe('UpdateById Validator', function () {
         context('When valid arguments are passed', function () {
             it('Should not throw an error', function () {
-                FeatureNameValidator.canUpdateById(new ValidRequestMocks().updateById, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(new ValidRequestMocks().updateById, responseMock, (error: Error) => {
                     expect(error).to.not.exist;
                 });
             });
@@ -101,9 +101,9 @@ describe('FeatureName Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an PropertyInvalidError When property is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.featureName.property = undefined;
+                invalidRequestMock.body.comment.property = undefined;
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -111,9 +111,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.featureName.property = null;
+                invalidRequestMock.body.comment.property = null;
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -121,9 +121,9 @@ describe('FeatureName Validator Middleware', function () {
 
             it('Should throw an PropertyInvalidError When property is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.featureName.property = '2142142142141241';
+                invalidRequestMock.body.comment.property = '2142142142141241';
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(PropertyInvalidError);
                 });
@@ -133,7 +133,7 @@ describe('FeatureName Validator Middleware', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
                 invalidRequestMock.params.id = undefined;
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(IdInvalidError);
                 });
@@ -143,7 +143,7 @@ describe('FeatureName Validator Middleware', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
                 invalidRequestMock.params.id = null;
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(IdInvalidError);
                 });
@@ -153,7 +153,7 @@ describe('FeatureName Validator Middleware', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
                 invalidRequestMock.params.id = '1244';
 
-                FeatureNameValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(IdInvalidError);
                 });
@@ -163,7 +163,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canUpdateMany Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canUpdateMany(new ValidRequestMocks().updateMany, responseMock, (error: Error) => {
+                    CommentValidator.canUpdateMany(new ValidRequestMocks().updateMany, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });
@@ -172,9 +172,9 @@ describe('FeatureName Validator Middleware', function () {
             context('When invalid arguments are passed', function () {
                 it('Should throw an PropertyInvalidError When property is undefined', function () {
                     const invalidRequestMock = new ValidRequestMocks().updateMany;
-                    invalidRequestMock.body.featureName.property = undefined;
+                    invalidRequestMock.body.comment.property = undefined;
 
-                    FeatureNameValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(PropertyInvalidError);
                     });
@@ -182,9 +182,9 @@ describe('FeatureName Validator Middleware', function () {
 
                 it('Should throw an PropertyInvalidError When property is null', function () {
                     const invalidRequestMock = new ValidRequestMocks().updateMany;
-                    invalidRequestMock.body.featureName.property = null;
+                    invalidRequestMock.body.comment.property = null;
 
-                    FeatureNameValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(PropertyInvalidError);
                     });
@@ -192,9 +192,9 @@ describe('FeatureName Validator Middleware', function () {
 
                 it('Should throw an PropertyInvalidError When property is too long', function () {
                     const invalidRequestMock = new ValidRequestMocks().updateMany;
-                    invalidRequestMock.body.featureName.property = '21414141412414124';
+                    invalidRequestMock.body.comment.property = '21414141412414124';
 
-                    FeatureNameValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canUpdateMany(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(PropertyInvalidError);
                     });
@@ -205,7 +205,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canDeleteById Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canDeleteById(new ValidRequestMocks().deleteById, responseMock, (error: Error) => {
+                    CommentValidator.canDeleteById(new ValidRequestMocks().deleteById, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });
@@ -216,7 +216,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().deleteById;
                     invalidRequestMock.params.id = undefined;
 
-                    FeatureNameValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -226,7 +226,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().deleteById;
                     invalidRequestMock.params.id = undefined;
 
-                    FeatureNameValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -236,7 +236,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().deleteById;
                     invalidRequestMock.params.id = '1243';
 
-                    FeatureNameValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canDeleteById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -247,7 +247,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canGetById Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canGetById(new ValidRequestMocks().getById, responseMock, (error: Error) => {
+                    CommentValidator.canGetById(new ValidRequestMocks().getById, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });
@@ -258,7 +258,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().getById;
                     invalidRequestMock.params.id = undefined;
 
-                    FeatureNameValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -268,7 +268,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().getById;
                     invalidRequestMock.params.id = null;
 
-                    FeatureNameValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -278,7 +278,7 @@ describe('FeatureName Validator Middleware', function () {
                     const invalidRequestMock = new ValidRequestMocks().getById;
                     invalidRequestMock.params.id = '1234';
 
-                    FeatureNameValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
+                    CommentValidator.canGetById(invalidRequestMock, responseMock, (error: Error) => {
                         expect(error).to.exist;
                         expect(error).to.be.an.instanceof(IdInvalidError);
                     });
@@ -289,7 +289,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canGetOne Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canGetOne(new ValidRequestMocks().getOne, responseMock, (error: Error) => {
+                    CommentValidator.canGetOne(new ValidRequestMocks().getOne, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });
@@ -299,7 +299,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canGetMany Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canGetMany(new ValidRequestMocks().getMany, responseMock, (error: Error) => {
+                    CommentValidator.canGetMany(new ValidRequestMocks().getMany, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });
@@ -309,7 +309,7 @@ describe('FeatureName Validator Middleware', function () {
         describe('canGetAmount Validator', function () {
             context('When valid arguments are passed', function () {
                 it('Should not throw an error', function () {
-                    FeatureNameValidator.canGetAmount(new ValidRequestMocks().getAmount, responseMock, (error: Error) => {
+                    CommentValidator.canGetAmount(new ValidRequestMocks().getAmount, responseMock, (error: Error) => {
                         expect(error).to.not.exist;
                     });
                 });

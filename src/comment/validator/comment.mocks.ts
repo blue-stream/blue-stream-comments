@@ -10,63 +10,63 @@ export class ValidRequestMocks {
     readonly validProperty2: string = '23456';
     readonly validProperty3: string = '34567';
 
-    readonly featureName = {
+    readonly comment = {
         property: this.validProperty,
     };
 
-    readonly featureName2 = {
+    readonly comment2 = {
         property: this.validProperty2,
     };
 
-    readonly featureName3 = {
+    readonly comment3 = {
         property: this.validProperty3,
     };
 
-    readonly featureNameFilter = this.featureName;
+    readonly commentFilter = this.comment;
 
     authorizationHeader = `Bearer ${sign('mock-user', config.authentication.secret)}`;
 
     create = createRequest({
         method: 'POST',
-        url: '/api/featureName/',
+        url: '/api/comment/',
         headers: {
             authorization: this.authorizationHeader,
         },
         body: {
-            featureName: this.featureName,
+            comment: this.comment,
         },
     });
 
     createMany = createRequest({
         method: 'POST',
-        url: '/api/featureName/many/',
+        url: '/api/comment/many/',
         headers: {
             authorization: this.authorizationHeader,
         },
         body: {
-            featureNames: [
-                this.featureName,
-                this.featureName2,
-                this.featureName3,
+            comments: [
+                this.comment,
+                this.comment2,
+                this.comment3,
             ],
         },
     });
 
     updateMany = createRequest({
         method: 'PUT',
-        url: '/api/featureName/many',
+        url: '/api/comment/many',
         headers: {
             authorization: this.authorizationHeader,
         },
         body: {
-            featureNameFilter: this.featureNameFilter,
-            featureName: this.featureName,
+            commentFilter: this.commentFilter,
+            comment: this.comment,
         },
     });
 
     updateById = createRequest({
         method: 'PUT',
-        url: '/api/featureName/:id',
+        url: '/api/comment/:id',
         headers: {
             authorization: this.authorizationHeader,
         },
@@ -74,13 +74,13 @@ export class ValidRequestMocks {
             id: new Types.ObjectId(),
         },
         body: {
-            featureName: this.featureName,
+            comment: this.comment,
         },
     });
 
     deleteById = createRequest({
         method: 'DELETE',
-        url: '/api/featureName/:id',
+        url: '/api/comment/:id',
         headers: {
             authorization: this.authorizationHeader,
         },
@@ -91,34 +91,34 @@ export class ValidRequestMocks {
 
     getOne = createRequest({
         method: 'GET',
-        url: `/api/featureName/one?featureNameFilter={'property':${this.validProperty}}`,
+        url: `/api/comment/one?commentFilter={'property':${this.validProperty}}`,
         headers: {
             authorization: this.authorizationHeader,
         },
-        query: this.featureName,
+        query: this.comment,
     });
 
     getMany = createRequest({
         method: 'GET',
-        url: `/api/featureName/many?featureNameFilter={'property':${this.validProperty}}`,
+        url: `/api/comment/many?commentFilter={'property':${this.validProperty}}`,
         headers: {
             authorization: this.authorizationHeader,
         },
-        query: this.featureName,
+        query: this.comment,
     });
 
     getAmount = createRequest({
         method: 'GET',
-        url: `/api/featureName/amount?featureNameFilter={'property':${this.validProperty}}`,
+        url: `/api/comment/amount?commentFilter={'property':${this.validProperty}}`,
         headers: {
             authorization: this.authorizationHeader,
         },
-        query: this.featureName,
+        query: this.comment,
     });
 
     getById = createRequest({
         method: 'GET',
-        url: '/api/featureName/:id',
+        url: '/api/comment/:id',
         headers: {
             authorization: this.authorizationHeader,
         },

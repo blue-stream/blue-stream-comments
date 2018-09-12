@@ -17,8 +17,8 @@ export type Configuration = {
     rabbitMQ: {
         host: string;
         exchanges: {
-            featureNameReceiver: string;
-            featureNamePublisher: string;
+            commentReceiver: string;
+            commentPublisher: string;
         };
         reconnect_timeout: number;
     };
@@ -51,14 +51,14 @@ const development: Configuration = {
     rabbitMQ: {
         host: 'localhost',
         exchanges: {
-            featureNameReceiver: 'featureName',
-            featureNamePublisher: 'featureName',
+            commentReceiver: 'comment',
+            commentPublisher: 'comment',
         },
         reconnect_timeout: 1000,
     },
     server: {
         port: 3000,
-        name: 'featureName',
+        name: 'comment',
     },
     authentication: {
         required: true,
@@ -85,14 +85,14 @@ const production: Configuration = {
     rabbitMQ: {
         host: 'localhost',
         exchanges: {
-            featureNameReceiver: 'featureName',
-            featureNamePublisher: 'featureName',
+            commentReceiver: 'comment',
+            commentPublisher: 'comment',
         },
         reconnect_timeout: 1000,
     },
     server: {
         port: process.env.PORT ? +process.env.PORT : 3000,
-        name: 'featureName',
+        name: 'comment',
     },
     authentication: {
         required: true,
@@ -119,14 +119,14 @@ const test: Configuration = {
     rabbitMQ: {
         host: 'localhost',
         exchanges: {
-            featureNameReceiver: 'featureName',
-            featureNamePublisher: 'featureName',
+            commentReceiver: 'comment',
+            commentPublisher: 'comment',
         },
         reconnect_timeout: 1000,
     },
     server: {
         port: process.env.PORT ? +process.env.PORT : 3000,
-        name: 'featureName',
+        name: 'comment',
     },
     authentication: {
         required: true,
