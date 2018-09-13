@@ -1,11 +1,30 @@
 import { Types } from 'mongoose';
+import { commentValidatorConfig } from './comment.validator.config';
 
 export class CommentValidatons {
-    static isPropertyValid(property: string): boolean {
-        return (!!property && property.length < 10);
+    static isTextLengthTooShort(text: string): boolean {
+        return (text.length < commentValidatorConfig.text.minLength);
+    }
+
+    static isTextLengthTooLong(text: string): boolean {
+        return (text.length > commentValidatorConfig.text.minLength);
+    }
+
+    static isUserValid(user: string): boolean {
+        const userRegex: RegExp = /\w+@\w+/i;
+
+        return userRegex.test(user);
+    }
+
+    static isVideoValid(video: string): boolean {
+        return (!!video && Types.ObjectId.isValid(video));
     }
 
     static isIdValid(id: string): boolean {
         return (!!id && Types.ObjectId.isValid(id));
+    }
+
+    static isParentValid(parent: string): boolean {
+        return (!parent || Types.ObjectId.isValid(parent));
     }
 }
