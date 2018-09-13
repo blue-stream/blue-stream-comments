@@ -1,19 +1,49 @@
 import { UserError } from './applicationError';
 
-export class PropertyInvalidError extends UserError {
+export class IdNotFoundError extends UserError {
     constructor(message?: string) {
-        super(message || `Property is invalid`, 400);
+        super(message || 'Comment ID was not found', 404);
     }
 }
 
-export class IdInvalidError extends UserError {
+export class VideoIdNotValidError extends UserError {
     constructor(message?: string) {
-        super(message || `Id is invalid`, 400);
+        super(message || `Video's ID is not valid`, 400);
     }
 }
 
-export class CommentNotFoundError extends UserError {
+export class CommentNotValidError extends UserError {
     constructor(message?: string) {
-        super(message || `Comment not found`, 404);
+        super(message || 'Comment is not valid', 400);
+    }
+}
+
+export class CommentTextNotValidError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || `Comment's text is not valid`);
+    }
+}
+
+export class TextTooShortError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || `Comment's text is too short`);
+    }
+}
+
+export class TextTooLongError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || `Comment's text is too long`);
+    }
+}
+
+export class CommentIdNotValidError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || `Comment's ID is not valid`);
+    }
+}
+
+export class UserIdNotValidError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || `User's ID is not valid`);
     }
 }
