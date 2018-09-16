@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { CommentManager } from './comment.manager';
 
-import { CommentNotFoundError } from '../utils/errors/userErrors';
+import { IdNotFoundError } from '../utils/errors/userErrors';
 import { UpdateWriteOpResult } from 'mongodb';
 
 type UpdateResponse = UpdateWriteOpResult['result'];
@@ -13,7 +13,7 @@ export class CommentController {
     static async updateById(req: Request, res: Response) {
         const updated = await CommentManager.updateById(req.params.id, req.body.comment);
         if (!updated) {
-            throw new CommentNotFoundError();
+            throw new IdNotFoundError();
         }
 
         res.json(updated);
@@ -22,7 +22,7 @@ export class CommentController {
     static async deleteById(req: Request, res: Response) {
         const deleted = await CommentManager.deleteById(req.params.id);
         if (!deleted) {
-            throw new CommentNotFoundError();
+            throw new IdNotFoundError();
         }
 
         res.json(deleted);
@@ -31,7 +31,7 @@ export class CommentController {
     static async getById(req: Request, res: Response) {
         const comment = await CommentManager.getById(req.params.id);
         if (!comment) {
-            throw new CommentNotFoundError();
+            throw new IdNotFoundError();
         }
 
         res.json(comment);
@@ -40,7 +40,7 @@ export class CommentController {
     static async getOne(req: Request, res: Response) {
         const comment = await CommentManager.getOne(req.query);
         if (!comment) {
-            throw new CommentNotFoundError();
+            throw new IdNotFoundError();
         }
 
         res.json(comment);
