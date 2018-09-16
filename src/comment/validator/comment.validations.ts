@@ -7,7 +7,7 @@ export class CommentValidatons {
     }
 
     static isTextLengthTooLong(text: string): boolean {
-        return (text.length > commentValidatorConfig.text.minLength);
+        return (text.length > commentValidatorConfig.text.maxLength);
     }
 
     static isUserValid(user: string): boolean {
