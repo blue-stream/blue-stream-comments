@@ -66,11 +66,11 @@ export class CommentValidator {
     }
 
     private static validateText(text: string) {
-        if (!CommentValidatons.isTextLengthTooShort(text)) {
+        if (CommentValidatons.isTextLengthTooShort(text)) {
             return new TextTooShortError();
         }
 
-        if (!CommentValidatons.isTextLengthTooLong(text)) {
+        if (CommentValidatons.isTextLengthTooLong(text)) {
             return new TextTooLongError();
         }
 
