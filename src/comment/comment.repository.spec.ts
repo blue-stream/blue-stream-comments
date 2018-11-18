@@ -16,7 +16,6 @@ const invalidComment: Partial<IComment> = {
     user: invalidUser,
 };
 
-const commentFilter: Partial<IComment> = { user: 'a@a' };
 const commentDataToUpdate: Partial<IComment> = { text: 'updated text' };
 const unexistingComment: Partial<IComment> = { user: 'c@c' };
 const unknownProperty: Object = { unknownProperty: true };
