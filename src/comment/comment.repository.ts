@@ -9,13 +9,18 @@ export class CommentRepository {
         return CommentModel.create(comment);
     }
 
-    static updateById(id: string, comment: Partial<IComment>)
-        : Promise<IComment | null> {
-        return CommentModel.findByIdAndUpdate(
-            id,
-            { $set: comment },
-            { new: true, runValidators: true },
-        ).exec();
+    static async updateById(id: string, comment: Partial<IComment>): Promise<IComment | null> {
+        const commentDocument = await CommentModel.findById(id);
+
+        if (commentDocument) {
+            for (const prop in comment) {
+                commentDocument[prop as keyof IComment] = comment[prop as keyof IComment];
+            }
+
+            return await commentDocument.save({ validateBeforeSave: true });
+        }
+
+        return null;
     }
 
     static deleteById(id: string)
@@ -45,10 +50,10 @@ export class CommentRepository {
     static getMany(commentFilter: Partial<IComment>, startIndex: number, endIndex: number)
         : Promise<IComment[]> {
         return CommentModel
-        .find(commentFilter)
-        .skip(+startIndex)
-        .limit(+endIndex - +startIndex)
-        .exec();
+            .find(commentFilter)
+            .skip(+startIndex)
+            .limit(+endIndex - +startIndex)
+            .exec();
     }
 
     static getAmount(commentFilter: Partial<IComment>)

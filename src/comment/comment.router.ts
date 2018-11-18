@@ -6,10 +6,6 @@ import { Wrapper } from '../utils/wrapper';
 const CommentRouter: Router = Router();
 
 CommentRouter.post('/', CommentValidator.canCreate, Wrapper.wrapAsync(CommentController.create));
-
-
-CommentRouter.post('/many', CommentValidator.canCreateMany, Wrapper.wrapAsync(CommentController.createMany));
-CommentRouter.put('/many', CommentValidator.canUpdateMany, Wrapper.wrapAsync(CommentController.updateMany));
 CommentRouter.put('/:id', CommentValidator.canUpdateById, Wrapper.wrapAsync(CommentController.updateById));
 CommentRouter.delete('/:id', CommentValidator.canDeleteById, Wrapper.wrapAsync(CommentController.deleteById));
 CommentRouter.get('/one', CommentValidator.canGetOne, Wrapper.wrapAsync(CommentController.getOne));

@@ -1,26 +1,55 @@
-
 import { expect } from 'chai';
 import * as mongoose from 'mongoose';
 import { config } from '../config';
 import { ServerError } from '../utils/errors/applicationError';
 import { IComment } from './comment.interface';
 import { CommentRepository } from './comment.repository';
+import { commentValidatorConfig } from './validator/comment.validator.config';
 
 const validId: string = new mongoose.Types.ObjectId().toHexString();
-const invalidId: string = 'invalid id';
-const comment: IComment = {
-    property: 'prop',
+const invalidId: string = ' ';
+const invalidUser: string = 'a';
+const invalidComment: Partial<IComment> = {
+    video: invalidId,
+    parent: invalidId,
+    text: '1'.repeat(commentValidatorConfig.text.maxLength + 1),
+    user: invalidUser,
 };
-const commentArr: IComment[] = ['prop', 'prop', 'prop', 'b', 'c', 'd'].map(item => ({ property: item }));
-const invalidComment: any = {
-    property: { invalid: true },
-};
-const commentFilter: Partial<IComment> = { property: 'prop' };
-const commentDataToUpdate: Partial<IComment> = { property: 'updated' };
-const unexistingComment: Partial<IComment> = { property: 'unexisting' };
+
+const commentFilter: Partial<IComment> = { user: 'a@a' };
+const commentDataToUpdate: Partial<IComment> = { text: 'updated text' };
+const unexistingComment: Partial<IComment> = { user: 'c@c' };
 const unknownProperty: Object = { unknownProperty: true };
+const comment: IComment = {
+    video: (new mongoose.Types.ObjectId()).toHexString(),
+    parent: (new mongoose.Types.ObjectId()).toHexString(),
+    text: 'comment text',
+    user: 'a@a',
+};
+
+const comment2: IComment = {
+    video: (new mongoose.Types.ObjectId()).toHexString(),
+    parent: (new mongoose.Types.ObjectId()).toHexString(),
+    text: 'comment text 2',
+    user: 'a@b',
+};
+
+const comment3: IComment = {
+    video: (new mongoose.Types.ObjectId()).toHexString(),
+    parent: (new mongoose.Types.ObjectId()).toHexString(),
+    text: 'comment text 3',
+    user: 'b@b',
+};
+
+const commentArr = [comment, comment2, comment3];
+
+Object.freeze(comment);
+Object.freeze(comment2);
+Object.freeze(comment3);
+Object.freeze(commentArr);
 
 describe('Comment Repository', function () {
+
     before(async function () {
         await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, { useNewUrlParser: true });
     });
@@ -38,33 +67,47 @@ describe('Comment Repository', function () {
             it('Should create comment', async function () {
                 const createdComment = await CommentRepository.create(comment);
                 expect(createdComment).to.exist;
-                expect(createdComment).to.have.property('property', 'prop');
                 expect(createdComment).to.have.property('createdAt');
                 expect(createdComment).to.have.property('updatedAt');
-                expect(createdComment).to.have.property('_id').which.satisfies((id: any) => {
+
+                for (const prop in comment) {
+                    if (prop.toString() !== 'parent') {
+                        expectToHaveEqualProperty(createdComment, prop, comment[prop as keyof IComment]);
+                    }
+                }
+
+                expect(createdComment).to.have.property('parent').which.satisfies((id: any) => {
+                    return mongoose.Types.ObjectId.isValid(id);
+                });
+
+                expect(createdComment).to.have.property('id').which.satisfies((id: any) => {
                     return mongoose.Types.ObjectId.isValid(id);
                 });
             });
         });
 
         context('When comment is invalid', function () {
-            it('Should throw validation error when incorrect property type', async function () {
-                let hasThrown = false;
+            for (const prop in invalidComment) {
+                it(`Should throw validation error when incorrect ${prop} entered`, async function () {
+                    let hasThrown = false;
 
-                try {
-                    await CommentRepository.create(invalidComment);
-                } catch (err) {
-                    hasThrown = true;
-                    expect(err).to.exist;
-                    expect(err).to.have.property('name', 'ValidationError');
-                    expect(err).to.have.property('message').that.matches(/cast.+failed/i);
-                    expect(err).to.have.property('errors');
-                    expect(err.errors).to.have.property('property');
-                    expect(err.errors.property).to.have.property('name', 'CastError');
-                } finally {
-                    expect(hasThrown).to.be.true;
-                }
-            });
+                    const vid = {
+                        ...comment,
+                        [prop]: invalidComment[prop as keyof IComment],
+                    };
+
+                    try {
+                        await CommentRepository.create(vid);
+                    } catch (err) {
+                        hasThrown = true;
+                        expect(err).to.exist;
+                        expect(err).to.have.property('name', 'ValidationError');
+                        expect(err).to.have.property('errors');
+                    } finally {
+                        expect(hasThrown).to.be.true;
+                    }
+                });
+            }
 
             it('Should throw validation error when empty comment passed', async function () {
                 let hasThrown = false;
@@ -108,7 +151,9 @@ describe('Comment Repository', function () {
                 expect(updatedDoc).to.have.property('id', createdComment.id);
 
                 for (const prop in comment) {
-                    expect(updatedDoc).to.have.property(prop, createdComment[prop as keyof IComment]);
+                    if (prop.toString() !== 'parent') {
+                        expect(updatedDoc).to.have.property(prop, createdComment[prop as keyof IComment]);
+                    }
                 }
             });
 
@@ -119,20 +164,23 @@ describe('Comment Repository', function () {
         });
 
         context('When data is not valid', function () {
-            it('Should throw error when updated doc is not valid', async function () {
-                let hasThrown = false;
+            for (const prop in invalidComment) {
+                it(`Should throw error when ${prop} is invalid`, async function () {
+                    let hasThrown = false;
 
-                try {
-                    await CommentRepository.updateById(createdComment.id as string, { property: null } as any);
-                } catch (err) {
-                    hasThrown = true;
-                    expect(err).to.exist;
-                    expect(err).to.have.property('name', 'ValidationError');
-                    expect(err).to.have.property('message').that.matches(/path.+required/i);
-                } finally {
-                    expect(hasThrown).to.be.true;
-                }
-            });
+                    try {
+                        await CommentRepository.updateById(createdComment.id as string, { [prop]: invalidComment[prop as keyof IComment] } as any);
+                    } catch (err) {
+                        hasThrown = true;
+                        expect(err).to.exist;
+                        expect(err).to.have.property('name', 'ValidationError');
+                        expect(err).to.have.property('errors');
+                        expect(err.errors).to.have.property(prop);
+                    } finally {
+                        expect(hasThrown).to.be.true;
+                    }
+                });
+            }
         });
     });
 
@@ -190,11 +238,14 @@ describe('Comment Repository', function () {
             });
 
             it('Should return document by id', async function () {
-                const doc = await CommentRepository.getById(document.id!);
+                const doc: any = await CommentRepository.getById(document.id!);
                 expect(doc).to.exist;
                 expect(doc).to.have.property('id', document.id);
+                expect(doc.parent.toString()).to.be.equal(document.parent!.toString());
                 for (const prop in comment) {
-                    expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
+                    if (prop.toString() !== 'parent') {
+                        expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
+                    }
                 }
             });
 
@@ -231,21 +282,31 @@ describe('Comment Repository', function () {
             });
 
             it('Should return document by id', async function () {
-                const doc = await CommentRepository.getOne({ _id: document.id } as Partial<IComment>);
+                const doc: any = await CommentRepository.getOne({ _id: document.id } as Partial<IComment>);
                 expect(doc).to.exist;
+                expect(doc.parent.toString()).to.be.equal(document.parent!.toString());
+
                 for (const prop in comment) {
-                    expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
+                    if (prop.toString() !== 'parent') {
+                        expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
+                    }
                 }
             });
 
-            it('Should return document by property', async function () {
-                const doc = await CommentRepository.getOne(commentFilter);
-                expect(doc).to.exist;
-                expect(doc).to.have.property('id', document.id);
-                for (const prop in comment) {
-                    expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
-                }
-            });
+            for (const prop in comment) {
+                it(`Should return document by ${prop}`, async function () {
+                    const doc: any = await CommentRepository.getOne({ [prop]: comment[prop as keyof IComment] });
+                    expect(doc).to.exist;
+                    expect(doc).to.have.property('id', document.id);
+                    expect(doc.parent.toString()).to.be.equal(document.parent!.toString());
+
+                    for (const prop in comment) {
+                        if (prop.toString() !== 'parent') {
+                            expect(doc).to.have.property(prop, comment[prop as keyof IComment]);
+                        }
+                    }
+                });
+            }
 
             it('Should return null when document not exists', async function () {
                 const doc = await CommentRepository.getOne(unexistingComment);
@@ -279,36 +340,33 @@ describe('Comment Repository', function () {
 
         context('When data is valid', function () {
 
-            beforeEach(async function () {
-                await CommentRepository.createMany(commentArr);
+            beforeEach(function () {
+                return Promise.all(commentArr.map(comment => CommentRepository.create(comment)));
             });
 
             it('Should return all documents when filter is empty', async function () {
-                const documents = await CommentRepository.getMany({});
+                const documents = await CommentRepository.getMany({}, 0, 10);
                 expect(documents).to.exist;
                 expect(documents).to.be.an('array');
                 expect(documents).to.have.lengthOf(commentArr.length);
             });
 
-            it('Should return only matching documents', async function () {
-                const documents = await CommentRepository.getMany(commentFilter);
-                expect(documents).to.exist;
-                expect(documents).to.be.an('array');
+            for (const prop in comment) {
+                it(`Should return only matching documents by ${prop}`, async function () {
+                    const documents = await CommentRepository.getMany({ [prop]: comment[prop as keyof IComment] }, 0, 10);
+                    expect(documents).to.exist;
+                    expect(documents).to.be.an('array');
 
-                const amountOfRequiredDocuments = commentArr.filter((item: IComment) => {
-                    let match = true;
-                    for (const prop in commentFilter) {
-                        match = match && item[prop as keyof IComment] === commentFilter[prop as keyof IComment];
-                    }
+                    const amountOfRequiredDocuments = commentArr.filter((item: IComment) => {
+                        return item[prop as keyof IComment] === comment[prop as keyof IComment];
+                    }).length;
 
-                    return match;
-                }).length;
-
-                expect(documents).to.have.lengthOf(amountOfRequiredDocuments);
-            });
+                    expect(documents).to.have.lengthOf(amountOfRequiredDocuments);
+                });
+            }
 
             it('Should return empty array when critiria not matching any document', async function () {
-                const documents = await CommentRepository.getMany(unexistingComment);
+                const documents = await CommentRepository.getMany(unexistingComment, 0, 10);
                 expect(documents).to.exist;
                 expect(documents).to.be.an('array');
                 expect(documents).to.have.lengthOf(0);
@@ -320,7 +378,7 @@ describe('Comment Repository', function () {
                 let hasThrown = false;
 
                 try {
-                    await CommentRepository.getMany(0 as any);
+                    await CommentRepository.getMany(0 as any, 0, 10);
                 } catch (err) {
                     hasThrown = true;
                     expect(err).to.exist;
@@ -331,7 +389,7 @@ describe('Comment Repository', function () {
             });
 
             it('Should return null when filter is not in correct format', async function () {
-                const documents = await CommentRepository.getMany(unknownProperty);
+                const documents = await CommentRepository.getMany(unknownProperty, 0, 10);
                 expect(documents).to.exist;
                 expect(documents).to.be.an('array');
                 expect(documents).to.have.lengthOf(0);
@@ -344,7 +402,7 @@ describe('Comment Repository', function () {
         context('When data is valid', function () {
 
             beforeEach(async function () {
-                await CommentRepository.createMany(commentArr);
+                await Promise.all(commentArr.map(comment => CommentRepository.create(comment)));
             });
 
             it('Should return amount of all documents when no filter provided', async function () {
@@ -354,22 +412,19 @@ describe('Comment Repository', function () {
                 expect(amount).to.equal(commentArr.length);
             });
 
-            it('Should return amount of filtered documents', async function () {
-                const amount = await CommentRepository.getAmount(commentFilter);
-                expect(amount).to.exist;
-                expect(amount).to.be.a('number');
+            for (const prop in comment) {
+                it(`Should return amount of filtered documents by ${prop}`, async function () {
+                    const amount = await CommentRepository.getAmount({ [prop]: comment[prop as keyof IComment] });
+                    expect(amount).to.exist;
+                    expect(amount).to.be.a('number');
 
-                const amountOfRequiredDocuments = commentArr.filter((item: IComment) => {
-                    let match = true;
-                    for (const prop in commentFilter) {
-                        match = match && item[prop as keyof IComment] === commentFilter[prop as keyof IComment];
-                    }
+                    const amountOfRequiredDocuments = commentArr.filter((item: IComment) => {
+                        return item[prop as keyof IComment] === comment[prop as keyof IComment];
+                    }).length;
 
-                    return match;
-                }).length;
-
-                expect(amount).to.equal(amountOfRequiredDocuments);
-            });
+                    expect(amount).to.equal(amountOfRequiredDocuments);
+                });
+            }
 
             it('Should return 0 when no documents matching filter', async function () {
                 const amount = await CommentRepository.getAmount(unexistingComment);
@@ -390,3 +445,11 @@ describe('Comment Repository', function () {
     });
 
 });
+
+function expectToHaveEqualProperty(source: Object, prop: string, value: any) {
+    if (typeof value === 'object') {
+        expect(source).to.have.property(prop).deep.equal(value);
+    } else {
+        expect(source).to.have.property(prop, value);
+    }
+}
