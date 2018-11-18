@@ -39,30 +39,15 @@ export class CommentValidator {
     }
 
     static canGetOne(req: Request, res: Response, next: NextFunction) {
-        next(
-            CommentValidator.validateVideo(req.query.video) ||
-            CommentValidator.validateParent(req.query.parent) ||
-            CommentValidator.validateText(req.query.text) ||
-            CommentValidator.validateUser(req.query.user),
-        );
+        next();
     }
 
     static canGetMany(req: Request, res: Response, next: NextFunction) {
-        next(
-            CommentValidator.validateVideo(req.query.video) ||
-            CommentValidator.validateParent(req.query.parent) ||
-            CommentValidator.validateText(req.query.text) ||
-            CommentValidator.validateUser(req.query.user),
-        );
+        next();
     }
 
     static canGetAmount(req: Request, res: Response, next: NextFunction) {
-        next(
-            CommentValidator.validateVideo(req.query.video) ||
-            CommentValidator.validateParent(req.query.parent) ||
-            CommentValidator.validateText(req.query.text) ||
-            CommentValidator.validateUser(req.query.user),
-        );
+        next();
     }
 
     private static validateText(text: string) {
