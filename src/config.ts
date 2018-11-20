@@ -30,12 +30,15 @@ export type Configuration = {
         required: boolean;
         secret: string;
     };
+    cors: {
+        allowedOrigins: string[],
+    },
 };
 
 const development: Configuration = {
     db: {
         host: process.env.DB_SERVER || 'localhost',
-        name: process.env.DB_NAME || 'blue-stream-template',
+        name: process.env.DB_NAME || 'blue-stream-comments',
         port: 27017,
     },
     logger: {
@@ -57,19 +60,22 @@ const development: Configuration = {
         reconnect_timeout: 1000,
     },
     server: {
-        port: 3000,
+        port: 5003,
         name: 'comment',
     },
     authentication: {
-        required: true,
+        required: false,
         secret: process.env.SECRET_KEY || 'bLue5tream@2018', // Don't use static value in production! remove from source control!
+    },
+    cors: {
+        allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:4200'],
     },
 };
 
 const production: Configuration = {
     db: {
         host: process.env.DB_SERVER || 'localhost',
-        name: process.env.DB_NAME || 'blue-stream-template',
+        name: process.env.DB_NAME || 'blue-stream-comments',
         port: 27017,
     },
     logger: {
@@ -91,19 +97,22 @@ const production: Configuration = {
         reconnect_timeout: 1000,
     },
     server: {
-        port: process.env.PORT ? +process.env.PORT : 3000,
+        port: process.env.PORT ? +process.env.PORT : 5003,
         name: 'comment',
     },
     authentication: {
-        required: true,
+        required: false,
         secret: process.env.SECRET_KEY || 'bLue5tream@2018', // Don't use static value in production! remove from source control!
+    },
+    cors: {
+        allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:4200'],
     },
 };
 
 const test: Configuration = {
     db: {
         host: process.env.DB_SERVER || 'localhost',
-        name: process.env.DB_NAME || 'blue-stream-template-test',
+        name: process.env.DB_NAME || 'blue-stream-comments-test',
         port: 27017,
     },
     logger: {
@@ -125,12 +134,15 @@ const test: Configuration = {
         reconnect_timeout: 1000,
     },
     server: {
-        port: process.env.PORT ? +process.env.PORT : 3000,
+        port: process.env.PORT ? +process.env.PORT : 5003,
         name: 'comment',
     },
     authentication: {
-        required: true,
+        required: false,
         secret: process.env.SECRET_KEY || 'bLue5tream@2018', // Don't use static value in production! remove from source control!
+    },
+    cors: {
+        allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:4200'],
     },
 };
 

@@ -6,9 +6,13 @@ import { ServerError } from '../utils/errors/applicationError';
 export class CommentRepository {
     static create(comment: IComment)
         : Promise<IComment> {
+        if (!comment.parent) {
+            comment.parent = null;
+        }
         return CommentModel.create(comment);
     }
 
+    // Should add checks for unallowed properties to be changed
     static async updateById(id: string, comment: Partial<IComment>): Promise<IComment | null> {
         const commentDocument = await CommentModel.findById(id);
 

@@ -24,7 +24,7 @@ export class CommentValidatons {
         return (!!id && Types.ObjectId.isValid(id));
     }
 
-    static isParentValid(parent: string): boolean {
+    static isParentValid(parent: string | null): boolean {
         return (!parent || Types.ObjectId.isValid(parent));
     }
 }

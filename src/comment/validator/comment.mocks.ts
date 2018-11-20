@@ -39,9 +39,7 @@ export class ValidRequestMocks {
         headers: {
             authorization: this.authorizationHeader,
         },
-        body: {
-            comment: this.comment,
-        },
+        body: this.comment,
     });
 
     updateById = createRequest({
@@ -53,9 +51,7 @@ export class ValidRequestMocks {
         params: {
             id: new Types.ObjectId(),
         },
-        body: {
-            comment: this.comment,
-        },
+        body: this.comment,
     });
 
     deleteById = createRequest({

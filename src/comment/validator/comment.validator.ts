@@ -13,20 +13,20 @@ export class CommentValidator {
 
     static canCreate(req: Request, res: Response, next: NextFunction) {
         next(
-            CommentValidator.validateVideo(req.body.comment.video) ||
-            CommentValidator.validateParent(req.body.comment.parent) ||
-            CommentValidator.validateText(req.body.comment.text) ||
-            CommentValidator.validateUser(req.body.comment.user),
+            CommentValidator.validateVideo(req.body.video) ||
+            CommentValidator.validateParent(req.body.parent) ||
+            CommentValidator.validateText(req.body.text) ||
+            CommentValidator.validateUser(req.body.user),
         );
     }
 
     static canUpdateById(req: Request, res: Response, next: NextFunction) {
         next(
             CommentValidator.validateId(req.params.id) ||
-            CommentValidator.validateVideo(req.body.comment.video) ||
-            CommentValidator.validateParent(req.body.comment.parent) ||
-            CommentValidator.validateText(req.body.comment.text) ||
-            CommentValidator.validateUser(req.body.comment.user),
+            CommentValidator.validateVideo(req.body.video) ||
+            CommentValidator.validateParent(req.body.parent) ||
+            CommentValidator.validateText(req.body.text) ||
+            CommentValidator.validateUser(req.body.user),
         );
     }
 
@@ -86,7 +86,7 @@ export class CommentValidator {
         return undefined;
     }
 
-    private static validateParent(parent: string) {
+    private static validateParent(parent: string | null) {
         if (!CommentValidatons.isParentValid(parent)) {
             return new CommentIdNotValidError();
         }

@@ -24,7 +24,7 @@ describe('Comment Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an VideoIdNotValidError When video is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.video = undefined;
+                invalidRequestMock.body.video = undefined;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -34,7 +34,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an VideoIdNotValidError When video is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.video = null;
+                invalidRequestMock.body.video = null;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -44,7 +44,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.user = undefined;
+                invalidRequestMock.body.user = undefined;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -54,7 +54,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.user = null;
+                invalidRequestMock.body.user = null;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -64,7 +64,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is invalid', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.user = 'a';
+                invalidRequestMock.body.user = 'a';
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -74,7 +74,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an TextTooLongError When text is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
+                invalidRequestMock.body.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -84,7 +84,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an TextTooShortError When text is too short', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.comment.text = '';
+                invalidRequestMock.body.text = '';
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -106,7 +106,7 @@ describe('Comment Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an VideoIdNotValidError When video is invalid', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.comment.video = '1242';
+                invalidRequestMock.body.video = '1242';
 
                 CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -116,7 +116,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is invalid', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.comment.user = 'a';
+                invalidRequestMock.body.user = 'a';
 
                 CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -126,7 +126,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an TextTooLongError When text is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.comment.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
+                invalidRequestMock.body.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
 
                 CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -136,7 +136,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an TextTooShortError When text is too short', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.comment.text = '';
+                invalidRequestMock.body.text = '';
 
                 CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;

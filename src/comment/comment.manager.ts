@@ -27,6 +27,33 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.getMany(commentFilter, startIndex, endIndex);
     }
 
+    static async getRootComments(videoId: string, startIndex: number, endIndex: number) {
+        const comments: IComment[] = await CommentRepository.getMany({ video: videoId, parent: null }, startIndex, endIndex);
+        const RepliesAmountPromise: Promise<number>[] = [];
+
+        comments.forEach((comment: IComment) => {
+            RepliesAmountPromise.push(CommentManager.getRepliesAmount(comment.id));
+        });
+
+        const RepliesAmount: number[] = await Promise.all(RepliesAmountPromise);
+
+        return comments.map((comment: IComment, index: number) => {
+            return { ...(comment as any)._doc, repliesAmount: RepliesAmount[index] };
+        });
+    }
+
+    static getReplies(parent: string, startIndex: number, endIndex: number) {
+        return CommentRepository.getMany({ parent }, startIndex, endIndex);
+    }
+
+    static getRepliesAmount(parent: string | undefined) {
+        if (!parent) {
+            return Promise.resolve(0);
+        }
+
+        return CommentRepository.getAmount({ parent });
+    }
+
     static getAmount(commentFilter: Partial<IComment>) {
         return CommentRepository.getAmount(commentFilter);
     }

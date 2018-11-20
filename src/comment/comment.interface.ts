@@ -3,5 +3,5 @@ export interface IComment {
     video: string;
     user: string;
     text: string;
-    parent?: string;
+    parent?: string | null;
 }

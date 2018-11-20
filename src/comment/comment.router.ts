@@ -10,6 +10,9 @@ CommentRouter.put('/:id', CommentValidator.canUpdateById, Wrapper.wrapAsync(Comm
 CommentRouter.delete('/:id', CommentValidator.canDeleteById, Wrapper.wrapAsync(CommentController.deleteById));
 CommentRouter.get('/one', CommentValidator.canGetOne, Wrapper.wrapAsync(CommentController.getOne));
 CommentRouter.get('/many', CommentValidator.canGetMany, Wrapper.wrapAsync(CommentController.getMany));
+CommentRouter.get('/root', Wrapper.wrapAsync(CommentController.getRootComments));
+CommentRouter.get('/replies', Wrapper.wrapAsync(CommentController.getReplies));
+
 CommentRouter.get('/amount', CommentValidator.canGetAmount, Wrapper.wrapAsync(CommentController.getAmount));
 CommentRouter.get('/:id', CommentValidator.canGetById, Wrapper.wrapAsync(CommentController.getById));
 

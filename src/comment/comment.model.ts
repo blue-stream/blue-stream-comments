@@ -27,9 +27,10 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
         },
         parent: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Comments',
+            ref: 'Comment',
+            default: null,
             validate: {
-                validator: (text: string) => {
+                validator: (text: string | null) => {
                     return CommentValidatons.isParentValid(text);
                 },
             },
@@ -50,12 +51,16 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
         id: true,
         toObject: {
             transform: (doc, ret) => {
-                ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
+                if (ret.parent) {
+                    ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
+                }
             },
         },
         toJSON: {
             transform: (doc, ret) => {
-                ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
+                if (ret.parent) {
+                    ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
+                }
             },
         },
     });

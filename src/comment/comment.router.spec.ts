@@ -82,7 +82,7 @@ describe('Comment Module', function () {
             it('Should return created comment', function (done: MochaDone) {
                 request(server.app)
                     .post('/api/comment/')
-                    .send({ comment })
+                    .send(comment)
                     .set({ authorization: authorizationHeader })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -143,7 +143,7 @@ describe('Comment Module', function () {
             it('Should return updated comment', function (done: MochaDone) {
                 request(server.app)
                     .put(`/api/comment/${returnedComment.id}`)
-                    .send({ comment })
+                    .send(comment)
 
                     .set({ authorization: authorizationHeader })
                     .expect(200)
@@ -168,7 +168,7 @@ describe('Comment Module', function () {
             it('Should return error status when id is not found', function (done: MochaDone) {
                 request(server.app)
                     .put(`/api/comment/${new mongoose.Types.ObjectId()}`)
-                    .send({ comment })
+                    .send(comment)
 
                     .set({ authorization: authorizationHeader })
                     .expect(404)
@@ -195,8 +195,7 @@ describe('Comment Module', function () {
             it('Should return error status when id is invalid', function (done: MochaDone) {
                 request(server.app)
                     .put('/api/comment/2')
-                    .send({ comment })
-
+                    .send(comment)
                     .set({ authorization: authorizationHeader })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -215,7 +214,7 @@ describe('Comment Module', function () {
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
                     .put(`/api/comment/${returnedComment.id}`)
-                    .send({ comment: invalidComment })
+                    .send(invalidComment)
 
                     .set({ authorization: authorizationHeader })
                     .expect(400)
