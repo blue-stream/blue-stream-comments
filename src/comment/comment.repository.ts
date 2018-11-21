@@ -51,10 +51,11 @@ export class CommentRepository {
         ).exec();
     }
 
-    static getMany(commentFilter: Partial<IComment>, startIndex: number, endIndex: number)
+    static getMany(commentFilter: Partial<IComment>, startIndex: number, endIndex: number, sortOrder: string = '', sortBy: string = 'createdAt')
         : Promise<IComment[]> {
         return CommentModel
             .find(commentFilter)
+            .sort(sortOrder + sortBy)
             .skip(+startIndex)
             .limit(+endIndex - +startIndex)
             .exec();
