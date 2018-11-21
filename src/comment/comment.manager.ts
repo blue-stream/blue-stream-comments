@@ -15,7 +15,18 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.updateById(id, { text } as IComment);
     }
 
-    static deleteById(id: string) {
+    static async deleteById(id: string) {
+        const replies: IComment[] = await CommentManager.getReplies(id, 0, 0);
+        const RepliesPromise: Promise<IComment | null>[] = [];
+
+        if (replies.length !== 0) {
+            replies.forEach((reply: any) => {
+                RepliesPromise.push(CommentManager.deleteById(reply._id));
+            });
+
+            await Promise.all(RepliesPromise);
+        }
+
         return CommentRepository.deleteById(id);
     }
 
