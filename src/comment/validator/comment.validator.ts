@@ -20,13 +20,10 @@ export class CommentValidator {
         );
     }
 
-    static canUpdateById(req: Request, res: Response, next: NextFunction) {
+    static canUpdateTextById(req: Request, res: Response, next: NextFunction) {
         next(
             CommentValidator.validateId(req.params.id) ||
-            CommentValidator.validateVideo(req.body.video) ||
-            CommentValidator.validateParent(req.body.parent) ||
-            CommentValidator.validateText(req.body.text) ||
-            CommentValidator.validateUser(req.body.user),
+            CommentValidator.validateText(req.body.text),
         );
     }
 

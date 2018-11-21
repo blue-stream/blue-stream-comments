@@ -11,6 +11,10 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.updateById(id, comment);
     }
 
+    static updateTextById(id: string, text: string): Promise<IComment | null> {
+        return CommentRepository.updateById(id, { text } as IComment);
+    }
+
     static deleteById(id: string) {
         return CommentRepository.deleteById(id);
     }

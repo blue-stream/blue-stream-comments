@@ -143,8 +143,7 @@ describe('Comment Module', function () {
             it('Should return updated comment', function (done: MochaDone) {
                 request(server.app)
                     .put(`/api/comment/${returnedComment.id}`)
-                    .send(comment)
-
+                    .send({ text: comment.text })
                     .set({ authorization: authorizationHeader })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -154,10 +153,10 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('video', comment.video);
+                        expect(res.body).to.have.property('video');
                         expect(res.body).to.have.property('text', comment.text);
-                        expect(res.body).to.have.property('user', comment.user);
-                        expect(res.body).to.have.property('parent', comment.parent);
+                        expect(res.body).to.have.property('user');
+                        expect(res.body).to.have.property('parent');
 
                         expect(res.body).to.have.property('_id');
 
@@ -214,7 +213,7 @@ describe('Comment Module', function () {
             it('Should return error status when property is invalid', function (done: MochaDone) {
                 request(server.app)
                     .put(`/api/comment/${returnedComment.id}`)
-                    .send(invalidComment)
+                    .send({ text: invalidComment.text })
 
                     .set({ authorization: authorizationHeader })
                     .expect(400)
@@ -224,8 +223,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(400);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', VideoIdNotValidError.name);
-                        expect(res.body).to.have.property('message', new VideoIdNotValidError().message);
+                        expect(res.body).to.have.property('type', TextTooLongError.name);
+                        expect(res.body).to.have.property('message', new TextTooLongError().message);
 
                         done();
                     });

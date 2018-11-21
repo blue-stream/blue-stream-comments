@@ -42,7 +42,7 @@ export class ValidRequestMocks {
         body: this.comment,
     });
 
-    updateById = createRequest({
+    updateTextById = createRequest({
         method: 'PUT',
         url: '/api/comment/',
         headers: {

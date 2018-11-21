@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { Types } from 'mongoose';
 import { CommentValidator } from './comment.validator';
 import { ValidRequestMocks, responseMock } from './comment.mocks';
 import { commentValidatorConfig } from './comment.validator.config';
@@ -97,78 +96,58 @@ describe('Comment Validator Middleware', function () {
     describe('UpdateById Validator', function () {
         context('When valid arguments are passed', function () {
             it('Should not throw an error', function () {
-                CommentValidator.canUpdateById(new ValidRequestMocks().updateById, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(new ValidRequestMocks().updateTextById, responseMock, (error: Error) => {
                     expect(error).to.not.exist;
                 });
             });
         });
 
         context('When invalid arguments are passed', function () {
-            it('Should throw an VideoIdNotValidError When video is invalid', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.video = '1242';
-
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
-                    expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(VideoIdNotValidError);
-                });
-            });
-
-            it('Should throw an UserIdNotValidError When user is invalid', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
-                invalidRequestMock.body.user = 'a';
-
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
-                    expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(UserIdNotValidError);
-                });
-            });
-
             it('Should throw an TextTooLongError When text is too long', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
+                const invalidRequestMock = new ValidRequestMocks().updateTextById;
                 invalidRequestMock.body.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
 
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(TextTooLongError);
                 });
             });
 
             it('Should throw an TextTooShortError When text is too short', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
+                const invalidRequestMock = new ValidRequestMocks().updateTextById;
                 invalidRequestMock.body.text = '';
 
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(TextTooShortError);
                 });
             });
 
             it('Should throw an CommentIdNotValidError When id is undefined', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
+                const invalidRequestMock = new ValidRequestMocks().updateTextById;
                 invalidRequestMock.params.id = undefined;
 
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(CommentIdNotValidError);
                 });
             });
 
             it('Should throw an CommentIdNotValidError When id is null', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
+                const invalidRequestMock = new ValidRequestMocks().updateTextById;
                 invalidRequestMock.params.id = null;
 
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(CommentIdNotValidError);
                 });
             });
 
             it('Should throw an CommentIdNotValidError When id is not a valid ObjectID', function () {
-                const invalidRequestMock = new ValidRequestMocks().updateById;
+                const invalidRequestMock = new ValidRequestMocks().updateTextById;
                 invalidRequestMock.params.id = '1244';
 
-                CommentValidator.canUpdateById(invalidRequestMock, responseMock, (error: Error) => {
+                CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
                     expect(error).to.be.an.instanceof(CommentIdNotValidError);
                 });

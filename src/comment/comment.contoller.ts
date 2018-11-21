@@ -5,21 +5,13 @@ import { IdNotFoundError } from '../utils/errors/userErrors';
 import { UpdateWriteOpResult } from 'mongodb';
 import { IComment } from './comment.interface';
 
-type UpdateResponse = UpdateWriteOpResult['result'];
 export class CommentController {
     static async create(req: Request, res: Response) {
         res.json(await CommentManager.create(req.body));
     }
 
-    static async updateById(req: Request, res: Response) {
-        const comment: IComment = {
-            parent: req.body.parent,
-            text: req.body.text,
-            user: req.body.user,
-            video: req.body.video,
-        };
-
-        const updated = await CommentManager.updateById(req.params.id, comment);
+    static async updateTextById(req: Request, res: Response) {
+        const updated = await CommentManager.updateTextById(req.params.id, req.body.text);
         if (!updated) {
             throw new IdNotFoundError();
         }
