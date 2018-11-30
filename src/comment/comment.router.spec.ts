@@ -8,7 +8,7 @@ import {
     CommentIdNotValidError,
     CommentNotValidError,
     CommentTextNotValidError,
-    IdNotFoundError,
+    CommentNotFoundError,
     TextTooLongError,
     TextTooShortError,
     UserIdNotValidError,
@@ -177,8 +177,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', IdNotFoundError.name);
-                        expect(res.body).to.have.property('message', new IdNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -278,8 +278,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', IdNotFoundError.name);
-                        expect(res.body).to.have.property('message', new IdNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -356,8 +356,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', IdNotFoundError.name);
-                        expect(res.body).to.have.property('message', new IdNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });
@@ -467,8 +467,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(404);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', IdNotFoundError.name);
-                        expect(res.body).to.have.property('message', new IdNotFoundError().message);
+                        expect(res.body).to.have.property('type', CommentNotFoundError.name);
+                        expect(res.body).to.have.property('message', new CommentNotFoundError().message);
 
                         done();
                     });

@@ -1,6 +1,6 @@
 import { UserError } from './applicationError';
 
-export class IdNotFoundError extends UserError {
+export class CommentNotFoundError extends UserError {
     constructor(message?: string) {
         super(message || 'Comment ID was not found', 404);
     }
