@@ -17,7 +17,6 @@ import {
 import { config } from '../config';
 import { CommentManager } from './comment.manager';
 import { sign } from 'jsonwebtoken';
-import { commentValidatorConfig } from './validator/comment.validator.config';
 
 describe('Comment Module', function () {
     let server: Server;
@@ -27,7 +26,7 @@ describe('Comment Module', function () {
     const invalidComment: Partial<IComment> = {
         video: invalidId,
         parent: invalidId,
-        text: '1'.repeat(commentValidatorConfig.text.maxLength + 1),
+        text: '1'.repeat(config.validator.comment.text.maxLength + 1),
         user: invalidUser,
     };
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CommentValidatons } from './comment.validations';
+import { CommentValidations } from './comment.validations';
 import {
     TextTooShortError,
     CommentIdNotValidError,
@@ -48,11 +48,11 @@ export class CommentValidator {
     }
 
     private static validateText(text: string) {
-        if (CommentValidatons.isTextLengthTooShort(text)) {
+        if (CommentValidations.isTextLengthTooShort(text)) {
             return new TextTooShortError();
         }
 
-        if (CommentValidatons.isTextLengthTooLong(text)) {
+        if (CommentValidations.isTextLengthTooLong(text)) {
             return new TextTooLongError();
         }
 
@@ -60,7 +60,7 @@ export class CommentValidator {
     }
 
     private static validateId(id: string) {
-        if (!CommentValidatons.isIdValid(id)) {
+        if (!CommentValidations.isIdValid(id)) {
             return new CommentIdNotValidError();
         }
 
@@ -68,7 +68,7 @@ export class CommentValidator {
     }
 
     private static validateUser(user: string) {
-        if (!CommentValidatons.isUserValid(user)) {
+        if (!CommentValidations.isUserValid(user)) {
             return new UserIdNotValidError();
         }
 
@@ -76,7 +76,7 @@ export class CommentValidator {
     }
 
     private static validateVideo(video: string) {
-        if (!CommentValidatons.isVideoValid(video)) {
+        if (!CommentValidations.isVideoValid(video)) {
             return new VideoIdNotValidError();
         }
 
@@ -84,7 +84,7 @@ export class CommentValidator {
     }
 
     private static validateParent(parent: string | null) {
-        if (!CommentValidatons.isParentValid(parent)) {
+        if (!CommentValidations.isParentValid(parent)) {
             return new CommentIdNotValidError();
         }
 

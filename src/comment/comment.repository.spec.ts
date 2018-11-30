@@ -4,7 +4,6 @@ import { config } from '../config';
 import { ServerError } from '../utils/errors/applicationError';
 import { IComment } from './comment.interface';
 import { CommentRepository } from './comment.repository';
-import { commentValidatorConfig } from './validator/comment.validator.config';
 
 const validId: string = new mongoose.Types.ObjectId().toHexString();
 const invalidId: string = ' ';
@@ -12,7 +11,7 @@ const invalidUser: string = 'a';
 const invalidComment: Partial<IComment> = {
     video: invalidId,
     parent: invalidId,
-    text: '1'.repeat(commentValidatorConfig.text.maxLength + 1),
+    text: '1'.repeat(config.validator.comment.text.maxLength + 1),
     user: invalidUser,
 };
 

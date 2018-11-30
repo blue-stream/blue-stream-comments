@@ -18,6 +18,14 @@ export const config = {
         port: +(process.env.PORT || 5003),
         name: process.env.SERVICE_NAME || 'comment',
     },
+    validator: {
+        comment: {
+            text: {
+                maxLength: +(process.env.COMMENT_TEXT_MAX_LENGTH || 1000),
+                minLength: +(process.env.COMMENT_TEXT_MIN_LENGTH || 1),
+            },
+        },
+    },
     cors: {
         allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:4200'],
     },

@@ -1,13 +1,13 @@
 import { Types } from 'mongoose';
-import { commentValidatorConfig } from './comment.validator.config';
+import { config } from '../../config';
 
-export class CommentValidatons {
+export class CommentValidations {
     static isTextLengthTooShort(text: string): boolean {
-        return (text.length < commentValidatorConfig.text.minLength);
+        return (text.length < config.validator.comment.text.minLength);
     }
 
     static isTextLengthTooLong(text: string): boolean {
-        return (text.length > commentValidatorConfig.text.maxLength);
+        return (text.length > config.validator.comment.text.maxLength);
     }
 
     static isUserValid(user: string): boolean {

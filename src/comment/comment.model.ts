@@ -1,8 +1,7 @@
 
 import * as mongoose from 'mongoose';
 import { IComment } from './comment.interface';
-import { commentValidatorConfig } from './validator/comment.validator.config';
-import { CommentValidatons } from './validator/comment.validations';
+import { CommentValidations } from './validator/comment.validations';
 
 const commentSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -11,8 +10,8 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
             validate: {
                 validator: (text: string) => {
-                    return (!CommentValidatons.isTextLengthTooShort(text) &&
-                        (!CommentValidatons.isTextLengthTooLong(text)));
+                    return (!CommentValidations.isTextLengthTooShort(text) &&
+                        (!CommentValidations.isTextLengthTooLong(text)));
                 },
             },
         },
@@ -21,7 +20,7 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
             validate: {
                 validator: (text: string) => {
-                    return CommentValidatons.isVideoValid(text);
+                    return CommentValidations.isVideoValid(text);
                 },
             },
         },
@@ -31,7 +30,7 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
             default: null,
             validate: {
                 validator: (text: string | null) => {
-                    return CommentValidatons.isParentValid(text);
+                    return CommentValidations.isParentValid(text);
                 },
             },
         },
@@ -40,7 +39,7 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
             validate: {
                 validator: (text: string) => {
-                    return CommentValidatons.isUserValid(text);
+                    return CommentValidations.isUserValid(text);
                 },
             },
         },
