@@ -14,17 +14,7 @@ export class CommentRepository {
 
     // Should add checks for unallowed properties to be changed
     static async updateById(id: string, comment: Partial<IComment>): Promise<IComment | null> {
-        const commentDocument = await CommentModel.findById(id);
-
-        if (commentDocument) {
-            for (const prop in comment) {
-                commentDocument[prop as keyof IComment] = comment[prop as keyof IComment];
-            }
-
-            return await commentDocument.save({ validateBeforeSave: true });
-        }
-
-        return null;
+        return CommentModel.findByIdAndUpdate(id, comment, { runValidators: true, new: true }).exec();
     }
 
     static deleteById(id: string)

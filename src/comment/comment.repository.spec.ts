@@ -171,9 +171,15 @@ describe('Comment Repository', function () {
                     } catch (err) {
                         hasThrown = true;
                         expect(err).to.exist;
-                        expect(err).to.have.property('name', 'ValidationError');
-                        expect(err).to.have.property('errors');
-                        expect(err.errors).to.have.property(prop);
+
+                        if (prop.toString() === 'parent') {
+                            expect(err).to.have.property('name', 'CastError');
+                        } else {
+                            expect(err).to.have.property('name', 'ValidationError');
+                            expect(err).to.have.property('errors');
+                            expect(err.errors).to.have.property(prop);
+                        }
+
                     } finally {
                         expect(hasThrown).to.be.true;
                     }
