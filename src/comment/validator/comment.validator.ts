@@ -5,7 +5,7 @@ import {
     CommentIdNotValidError,
     TextTooLongError,
     UserIdNotValidError,
-    VideoIdNotValidError,
+    ResourceIdNotValidError,
 } from '../../utils/errors/userErrors';
 import { IComment } from '../comment.interface';
 
@@ -13,7 +13,7 @@ export class CommentValidator {
 
     static canCreate(req: Request, res: Response, next: NextFunction) {
         next(
-            CommentValidator.validateVideo(req.body.video) ||
+            CommentValidator.validateVideo(req.body.resource) ||
             CommentValidator.validateParent(req.body.parent) ||
             CommentValidator.validateText(req.body.text) ||
             CommentValidator.validateUser(req.body.user),
@@ -75,9 +75,9 @@ export class CommentValidator {
         return undefined;
     }
 
-    private static validateVideo(video: string) {
-        if (!CommentValidations.isVideoValid(video)) {
-            return new VideoIdNotValidError();
+    private static validateVideo(resource: string) {
+        if (!CommentValidations.isResourceValid(resource)) {
+            return new ResourceIdNotValidError();
         }
 
         return undefined;

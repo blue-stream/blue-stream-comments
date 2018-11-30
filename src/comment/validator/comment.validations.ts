@@ -16,8 +16,8 @@ export class CommentValidations {
         return userRegex.test(user);
     }
 
-    static isVideoValid(video: string): boolean {
-        return (!!video && Types.ObjectId.isValid(video));
+    static isResourceValid(resource: string): boolean {
+        return (!!resource && Types.ObjectId.isValid(resource));
     }
 
     static isIdValid(id: string): boolean {

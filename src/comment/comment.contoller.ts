@@ -47,7 +47,7 @@ export class CommentController {
     }
 
     static async getRootComments(req: Request, res: Response) {
-        res.json(await CommentManager.getRootComments(req.query.video, req.query.startIndex, req.query.endIndex));
+        res.json(await CommentManager.getRootComments(req.query.resource, req.query.startIndex, req.query.endIndex));
     }
 
     static async getReplies(req: Request, res: Response) {
@@ -59,7 +59,7 @@ export class CommentController {
             parent: req.query.parent,
             text: req.query.text,
             user: req.query.user,
-            video: req.query.video,
+            resource: req.query.resource,
         };
 
         Object.keys(commentFilter).forEach((key: string) => {

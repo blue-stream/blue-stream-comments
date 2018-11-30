@@ -6,9 +6,9 @@ export class CommentNotFoundError extends UserError {
     }
 }
 
-export class VideoIdNotValidError extends UserError {
+export class ResourceIdNotValidError extends UserError {
     constructor(message?: string) {
-        super(message || 'Video\'s ID is not valid', 400);
+        super(message || 'resource\'s ID is not valid', 400);
     }
 }
 

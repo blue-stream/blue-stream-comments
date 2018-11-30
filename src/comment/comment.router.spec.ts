@@ -12,7 +12,7 @@ import {
     TextTooLongError,
     TextTooShortError,
     UserIdNotValidError,
-    VideoIdNotValidError,
+    ResourceIdNotValidError,
 } from '../utils/errors/userErrors';
 import { config } from '../config';
 import { CommentManager } from './comment.manager';
@@ -24,7 +24,7 @@ describe('Comment Module', function () {
     const invalidId: string = 'a';
     const invalidUser: string = 'a';
     const invalidComment: Partial<IComment> = {
-        video: invalidId,
+        resource: invalidId,
         parent: invalidId,
         text: '1'.repeat(config.validator.comment.text.maxLength + 1),
         user: invalidUser,
@@ -34,21 +34,21 @@ describe('Comment Module', function () {
     const unexistingComment: Partial<IComment> = { user: 'c@c' };
     const unknownProperty: Object = { unknownProperty: true };
     const comment: IComment = {
-        video: (new mongoose.Types.ObjectId()).toHexString(),
+        resource: (new mongoose.Types.ObjectId()).toHexString(),
         parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text',
         user: 'a@a',
     };
 
     const comment2: IComment = {
-        video: (new mongoose.Types.ObjectId()).toHexString(),
+        resource: (new mongoose.Types.ObjectId()).toHexString(),
         parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text 2',
         user: 'a@b',
     };
 
     const comment3: IComment = {
-        video: (new mongoose.Types.ObjectId()).toHexString(),
+        resource: (new mongoose.Types.ObjectId()).toHexString(),
         parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text 3',
         user: 'b@b',
@@ -91,7 +91,7 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('video', comment.video);
+                        expect(res.body).to.have.property('resource', comment.resource);
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user', comment.user);
                         expect(res.body).to.have.property('parent', comment.parent);
@@ -108,7 +108,7 @@ describe('Comment Module', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
             });
-            it('Should return error status when video is invalid', function (done: MochaDone) {
+            it('Should return error status when resource is invalid', function (done: MochaDone) {
                 request(server.app)
                     .post('/api/comment/')
                     .send({ comment: invalidComment })
@@ -121,8 +121,8 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(400);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', VideoIdNotValidError.name);
-                        expect(res.body).to.have.property('message', new VideoIdNotValidError().message);
+                        expect(res.body).to.have.property('type', ResourceIdNotValidError.name);
+                        expect(res.body).to.have.property('message', new ResourceIdNotValidError().message);
 
                         done();
                     });
@@ -152,7 +152,7 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('video');
+                        expect(res.body).to.have.property('resource');
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user');
                         expect(res.body).to.have.property('parent');
@@ -254,7 +254,7 @@ describe('Comment Module', function () {
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
 
-                        expect(res.body).to.have.property('video', comment.video);
+                        expect(res.body).to.have.property('resource', comment.resource);
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user', comment.user);
                         expect(res.body).to.have.property('parent', comment.parent);
@@ -326,7 +326,7 @@ describe('Comment Module', function () {
 
             it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/comment/one?video=${comment3.video}`)
+                    .get(`/api/comment/one?resource=${comment3.resource}`)
 
                     .set({ authorization: authorizationHeader })
                     .expect(200)
@@ -337,7 +337,7 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('video', commentArr[2].video);
+                        expect(res.body).to.have.property('resource', commentArr[2].resource);
 
                         done();
                     });
@@ -345,7 +345,7 @@ describe('Comment Module', function () {
 
             it('Should return error when comment not found', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/comment/one?video=${unexistingComment.video}`)
+                    .get(`/api/comment/one?resource=${unexistingComment.resource}`)
 
                     .set({ authorization: authorizationHeader })
                     .expect(404)
@@ -377,7 +377,7 @@ describe('Comment Module', function () {
 
             it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/comment/many?video=${comment3.video}`)
+                    .get(`/api/comment/many?resource=${comment3.resource}`)
                     .set({ authorization: authorizationHeader })
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -387,7 +387,7 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('array');
-                        expect(res.body[0]).to.have.property('video', commentArr[2].video);
+                        expect(res.body[0]).to.have.property('resource', commentArr[2].resource);
 
                         done();
                     });
@@ -408,7 +408,7 @@ describe('Comment Module', function () {
 
             it('Should return comment', function (done: MochaDone) {
                 request(server.app)
-                    .get(`/api/comment/amount?video=${comment3.video}`)
+                    .get(`/api/comment/amount?resource=${comment3.resource}`)
 
                     .set({ authorization: authorizationHeader })
                     .expect(200)
@@ -448,7 +448,7 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(200);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('video', comment.video);
+                        expect(res.body).to.have.property('resource', comment.resource);
 
                         done();
                     });

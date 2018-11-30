@@ -15,12 +15,12 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
                 },
             },
         },
-        video: {
+        resource: {
             type: String,
             required: true,
             validate: {
                 validator: (text: string) => {
-                    return CommentValidations.isVideoValid(text);
+                    return CommentValidations.isResourceValid(text);
                 },
             },
         },

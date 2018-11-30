@@ -6,7 +6,7 @@ import {
     CommentIdNotValidError,
     TextTooLongError,
     TextTooShortError,
-    VideoIdNotValidError,
+    ResourceIdNotValidError,
     UserIdNotValidError,
 } from '../../utils/errors/userErrors';
 
@@ -21,23 +21,23 @@ describe('Comment Validator Middleware', function () {
         });
 
         context('When invalid arguments are passed', function () {
-            it('Should throw an VideoIdNotValidError When video is undefined', function () {
+            it('Should throw an VideoIdNotValidError When resource is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.video = undefined;
+                invalidRequestMock.body.resource = undefined;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(VideoIdNotValidError);
+                    expect(error).to.be.an.instanceof(ResourceIdNotValidError);
                 });
             });
 
-            it('Should throw an VideoIdNotValidError When video is null', function () {
+            it('Should throw an VideoIdNotValidError When resource is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.video = null;
+                invalidRequestMock.body.resource = null;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(VideoIdNotValidError);
+                    expect(error).to.be.an.instanceof(ResourceIdNotValidError);
                 });
             });
 
