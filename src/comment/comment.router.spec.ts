@@ -54,6 +54,19 @@ describe('Comment Module', function () {
         user: 'b@b',
     };
 
+    const validResource = (new mongoose.Types.ObjectId()).toHexString();
+    const parentLessComment: IComment = {
+        resource: validResource,
+        text: 'comment text 1',
+        user: 'a@b',
+    };
+
+    const parentLessComment2: IComment = {
+        resource: validResource,
+        text: 'comment text 1',
+        user: 'a@b',
+    };
+
     const commentArr = [comment, comment2, comment3];
 
     const authorizationHeader = `Bearer ${sign('mock-user', config.authentication.secret)}`;
@@ -388,6 +401,74 @@ describe('Comment Module', function () {
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('array');
                         expect(res.body[0]).to.have.property('resource', commentArr[2].resource);
+
+                        done();
+                    });
+            });
+        });
+    });
+
+    describe('#GET /api/comment/root', function () {
+        const returnedComments: any = [];
+
+        context('When request is valid', function () {
+            beforeEach(async function () {
+                await mongoose.connection.db.dropDatabase();
+
+                returnedComments.push(await CommentManager.create(parentLessComment));
+                returnedComments.push(await CommentManager.create(parentLessComment2));
+            });
+
+            it('Should return comments', function (done: MochaDone) {
+                request(server.app)
+                    .get('/api/comment/root')
+                    .set({ authorization: authorizationHeader })
+                    .query({ resource: parentLessComment.resource })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((error: Error, res: request.Response) => {
+                        expect(error).to.not.exist;
+                        expect(res).to.exist;
+                        expect(res.status).to.equal(200);
+                        expect(res).to.have.property('body');
+                        expect(res.body).to.be.an('array');
+                        expect(res.body).to.be.of.length(2);
+                        expect(res.body[0]).to.have.property('resource', parentLessComment.resource);
+                        expect(res.body[1]).to.have.property('resource', parentLessComment2.resource);
+
+                        done();
+                    });
+            });
+        });
+    });
+
+    describe('#GET /api/comment/:id/replies', function () {
+        const returnedComments: any = [];
+
+        context('When request is valid', function () {
+            beforeEach(async function () {
+                await mongoose.connection.db.dropDatabase();
+                returnedComments.push(await CommentManager.create(commentArr[0]));
+                returnedComments.push(await CommentManager.create(commentArr[0]));
+                returnedComments.push(await CommentManager.create(commentArr[0]));
+            });
+
+            it('Should return replies', function (done: MochaDone) {
+                request(server.app)
+                    .get(`/api/comment/${returnedComments[0].parent}/replies`)
+                    .set({ authorization: authorizationHeader })
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end((error: Error, res: request.Response) => {
+                        expect(error).to.not.exist;
+                        expect(res).to.exist;
+                        expect(res.status).to.equal(200);
+                        expect(res).to.have.property('body');
+                        expect(res.body).to.be.an('array');
+                        expect(res.body).to.be.of.length(3);
+                        expect(res.body[0]).to.have.property('resource', commentArr[0].resource);
+                        expect(res.body[1]).to.have.property('resource', commentArr[0].resource);
+                        expect(res.body[2]).to.have.property('resource', commentArr[0].resource);
 
                         done();
                     });
