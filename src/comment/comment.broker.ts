@@ -22,14 +22,14 @@ export class CommentBroker {
     private static async deleteMany(data: { id: string }) {
         if (data && data.id) {
             const commentsToRemove: IComment[] = await CommentManager.getMany({ resource: data.id }, 0, 0);
-            const deleteSucceeded: boolean = await CommentManager.deleteMany(data.id);
 
-            if (deleteSucceeded) {
-                const commentsIDs: (string | undefined)[] = commentsToRemove.map(comment => comment.id);
+            if (commentsToRemove) {
+                const deleteSucceeded: boolean = await CommentManager.deleteMany(data.id);
 
-                commentsIDs.forEach((id) => {
-                    CommentBroker.publish('commentService.comment.remove.succeeded', { id });
-                });
+                if (deleteSucceeded) {
+                    const commentsIDs: (string | undefined)[] = commentsToRemove.map(comment => comment.id);
+                    CommentBroker.publish('commentService.comment.remove.succeeded', { ids: commentsIDs });
+                }
             }
 
         }
