@@ -51,7 +51,7 @@ export class CommentController {
     }
 
     static async getReplies(req: Request, res: Response) {
-        res.json(await CommentManager.getReplies(req.params.id, req.query.startIndex, req.query.endIndex));
+        res.json(await CommentManager.getReplies(req.params.parent, req.query.startIndex, req.query.endIndex));
     }
 
     static async getMany(req: Request, res: Response) {
