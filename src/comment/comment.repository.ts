@@ -24,6 +24,14 @@ export class CommentRepository {
         ).exec();
     }
 
+    static async deleteMany(resource: string): Promise<boolean> {
+        const response: { n: Number, ok: Number } = await CommentModel.deleteMany({
+            resource,
+        }).exec();
+
+        return Promise.resolve(response.ok === 1);
+    }
+
     static getById(id: string)
         : Promise<IComment | null> {
         return CommentModel.findById(

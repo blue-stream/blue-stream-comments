@@ -39,6 +39,22 @@ const comment3: IComment = {
     user: 'b@b',
 };
 
+const resource: string = (new mongoose.Types.ObjectId()).toHexString();
+
+const comment_same_resource_1: IComment = {
+    resource,
+    parent: (new mongoose.Types.ObjectId()).toHexString(),
+    text: 'comment text 3',
+    user: 'b@b',
+};
+
+const comment_same_resource_2: IComment = {
+    resource,
+    parent: (new mongoose.Types.ObjectId()).toHexString(),
+    text: 'comment text 3',
+    user: 'b@b',
+};
+
 const commentArr = [comment, comment2, comment3];
 
 Object.freeze(comment);
@@ -228,6 +244,41 @@ describe('Comment Repository', function () {
                 } finally {
                     expect(hasThrown).to.be.true;
                 }
+            });
+        });
+    });
+
+    describe('#deleteMany()', function () {
+
+        let createdComment: IComment;
+        let createdComment2: IComment;
+
+        beforeEach(async function () {
+            createdComment = await CommentRepository.create(comment_same_resource_1);
+            createdComment2 = await CommentRepository.create(comment_same_resource_2);
+        });
+
+        context('When data is valid', function () {
+
+            it('Should delete documents by resource and return true', async function () {
+                const deleted = await CommentRepository.deleteMany(createdComment.resource);
+                expect(deleted).to.exist;
+                expect(deleted).to.be.true;
+
+                const getDeleted = await CommentRepository.getOne(comment_same_resource_1);
+                const getDeleted2 = await CommentRepository.getOne(comment_same_resource_2);
+                expect(getDeleted).to.not.exist;
+                expect(getDeleted2).to.not.exist;
+            });
+
+            it('Should return false when document does not exist', async function () {
+                const res = await CommentRepository.deleteMany(new mongoose.Types.ObjectId().toHexString());
+                expect(res).to.be.true;
+
+                const getComment = await CommentRepository.getOne(comment_same_resource_1);
+                const getComment2 = await CommentRepository.getOne(comment_same_resource_2);
+                expect(getComment).to.exist;
+                expect(getComment2).to.exist;
             });
         });
     });

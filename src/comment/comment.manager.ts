@@ -30,6 +30,10 @@ export class CommentManager implements CommentRepository {
         return CommentRepository.deleteById(id);
     }
 
+    static deleteMany(resource: string) {
+        return CommentRepository.deleteMany(resource);
+    }
+
     static getById(id: string) {
         return CommentRepository.getById(id);
     }
