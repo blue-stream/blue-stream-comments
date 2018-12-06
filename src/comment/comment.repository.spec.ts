@@ -7,9 +7,10 @@ import { CommentRepository } from './comment.repository';
 
 const validId: string = new mongoose.Types.ObjectId().toHexString();
 const invalidId: string = ' ';
+const invalidResource: string = '';
 const invalidUser: string = 'a';
 const invalidComment: Partial<IComment> = {
-    resource: invalidId,
+    resource: invalidResource,
     parent: invalidId,
     text: '1'.repeat(config.validator.comment.text.maxLength + 1),
     user: invalidUser,

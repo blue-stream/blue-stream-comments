@@ -17,7 +17,7 @@ export class CommentValidations {
     }
 
     static isResourceValid(resource: string): boolean {
-        return (!!resource && Types.ObjectId.isValid(resource));
+        return (!!resource);
     }
 
     static isIdValid(id: string): boolean {

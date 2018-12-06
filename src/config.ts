@@ -14,6 +14,12 @@ export const config = {
         password: process.env.RMQ_LOGGER_PASS || 'guest',
         persistent: false,
     },
+    rabbitMQ: {
+        host: process.env.RMQ_HOST || 'localhost',
+        port: +(process.env.RMQ_PORT || 5672),
+        password: process.env.RMQ_PASSWORD || 'guest',
+        username: process.env.RMQ_USERNAME || 'guest',
+    },
     server: {
         port: +(process.env.PORT || 5003),
         name: process.env.SERVICE_NAME || 'comment',

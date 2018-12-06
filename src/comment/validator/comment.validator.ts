@@ -13,7 +13,7 @@ export class CommentValidator {
 
     static canCreate(req: Request, res: Response, next: NextFunction) {
         next(
-            CommentValidator.validateVideo(req.body.resource) ||
+            CommentValidator.validateResource(req.body.resource) ||
             CommentValidator.validateParent(req.body.parent) ||
             CommentValidator.validateText(req.body.text) ||
             CommentValidator.validateUser(req.body.user),
@@ -75,7 +75,7 @@ export class CommentValidator {
         return undefined;
     }
 
-    private static validateVideo(resource: string) {
+    private static validateResource(resource: string) {
         if (!CommentValidations.isResourceValid(resource)) {
             return new ResourceIdNotValidError();
         }
