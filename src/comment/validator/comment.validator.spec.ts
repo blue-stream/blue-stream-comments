@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import { CommentValidator } from './comment.validator';
 import { ValidRequestMocks, responseMock } from './comment.mocks';
-import { commentValidatorConfig } from './comment.validator.config';
+import { config } from '../../config';
 import {
     CommentIdNotValidError,
     TextTooLongError,
     TextTooShortError,
-    VideoIdNotValidError,
+    ResourceIdNotValidError,
     UserIdNotValidError,
 } from '../../utils/errors/userErrors';
 
@@ -21,23 +21,23 @@ describe('Comment Validator Middleware', function () {
         });
 
         context('When invalid arguments are passed', function () {
-            it('Should throw an VideoIdNotValidError When video is undefined', function () {
+            it('Should throw an VideoIdNotValidError When resource is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.video = undefined;
+                invalidRequestMock.body.resource = undefined;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(VideoIdNotValidError);
+                    expect(error).to.be.an.instanceof(ResourceIdNotValidError);
                 });
             });
 
-            it('Should throw an VideoIdNotValidError When video is null', function () {
+            it('Should throw an VideoIdNotValidError When resource is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.video = null;
+                invalidRequestMock.body.resource = null;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
-                    expect(error).to.be.an.instanceof(VideoIdNotValidError);
+                    expect(error).to.be.an.instanceof(ResourceIdNotValidError);
                 });
             });
 
@@ -73,7 +73,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an TextTooLongError When text is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
+                invalidRequestMock.body.text = '1'.repeat(config.validator.comment.text.maxLength + 1);
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -105,7 +105,7 @@ describe('Comment Validator Middleware', function () {
         context('When invalid arguments are passed', function () {
             it('Should throw an TextTooLongError When text is too long', function () {
                 const invalidRequestMock = new ValidRequestMocks().updateTextById;
-                invalidRequestMock.body.text = '1'.repeat(commentValidatorConfig.text.maxLength + 1);
+                invalidRequestMock.body.text = '1'.repeat(config.validator.comment.text.maxLength + 1);
 
                 CommentValidator.canUpdateTextById(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;

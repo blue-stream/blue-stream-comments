@@ -4,15 +4,14 @@ import { config } from '../config';
 import { ServerError } from '../utils/errors/applicationError';
 import { IComment } from './comment.interface';
 import { CommentRepository } from './comment.repository';
-import { commentValidatorConfig } from './validator/comment.validator.config';
 
 const validId: string = new mongoose.Types.ObjectId().toHexString();
 const invalidId: string = ' ';
 const invalidUser: string = 'a';
 const invalidComment: Partial<IComment> = {
-    video: invalidId,
+    resource: invalidId,
     parent: invalidId,
-    text: '1'.repeat(commentValidatorConfig.text.maxLength + 1),
+    text: '1'.repeat(config.validator.comment.text.maxLength + 1),
     user: invalidUser,
 };
 
@@ -20,21 +19,21 @@ const commentDataToUpdate: Partial<IComment> = { text: 'updated text' };
 const unexistingComment: Partial<IComment> = { user: 'c@c' };
 const unknownProperty: Object = { unknownProperty: true };
 const comment: IComment = {
-    video: (new mongoose.Types.ObjectId()).toHexString(),
+    resource: (new mongoose.Types.ObjectId()).toHexString(),
     parent: (new mongoose.Types.ObjectId()).toHexString(),
     text: 'comment text',
     user: 'a@a',
 };
 
 const comment2: IComment = {
-    video: (new mongoose.Types.ObjectId()).toHexString(),
+    resource: (new mongoose.Types.ObjectId()).toHexString(),
     parent: (new mongoose.Types.ObjectId()).toHexString(),
     text: 'comment text 2',
     user: 'a@b',
 };
 
 const comment3: IComment = {
-    video: (new mongoose.Types.ObjectId()).toHexString(),
+    resource: (new mongoose.Types.ObjectId()).toHexString(),
     parent: (new mongoose.Types.ObjectId()).toHexString(),
     text: 'comment text 3',
     user: 'b@b',
@@ -172,9 +171,15 @@ describe('Comment Repository', function () {
                     } catch (err) {
                         hasThrown = true;
                         expect(err).to.exist;
-                        expect(err).to.have.property('name', 'ValidationError');
-                        expect(err).to.have.property('errors');
-                        expect(err.errors).to.have.property(prop);
+
+                        if (prop.toString() === 'parent') {
+                            expect(err).to.have.property('name', 'CastError');
+                        } else {
+                            expect(err).to.have.property('name', 'ValidationError');
+                            expect(err).to.have.property('errors');
+                            expect(err.errors).to.have.property(prop);
+                        }
+
                     } finally {
                         expect(hasThrown).to.be.true;
                     }

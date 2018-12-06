@@ -9,21 +9,21 @@ export const responseMock = createResponse();
 export class ValidRequestMocks {
 
     readonly comment: IComment = {
-        video: (new Types.ObjectId()).toHexString(),
+        resource: (new Types.ObjectId()).toHexString(),
         parent: (new Types.ObjectId()).toHexString(),
         text: 'comment text',
         user: 'a@a',
     };
 
     readonly comment2: IComment = {
-        video: (new Types.ObjectId()).toHexString(),
+        resource: (new Types.ObjectId()).toHexString(),
         parent: (new Types.ObjectId()).toHexString(),
         text: 'comment text 2',
         user: 'a@b',
     };
 
     readonly comment3: IComment = {
-        video: (new Types.ObjectId()).toHexString(),
+        resource: (new Types.ObjectId()).toHexString(),
         parent: (new Types.ObjectId()).toHexString(),
         text: 'comment text 3',
         user: 'b@b',
@@ -67,7 +67,7 @@ export class ValidRequestMocks {
 
     getOne = createRequest({
         method: 'GET',
-        url: `/api/comment/one`,
+        url: '/api/comment/one',
         headers: {
             authorization: this.authorizationHeader,
         },
@@ -76,7 +76,7 @@ export class ValidRequestMocks {
 
     getMany = createRequest({
         method: 'GET',
-        url: `/api/comment/many`,
+        url: '/api/comment/many',
         headers: {
             authorization: this.authorizationHeader,
         },
@@ -85,7 +85,7 @@ export class ValidRequestMocks {
 
     getAmount = createRequest({
         method: 'GET',
-        url: `/api/comment/amount`,
+        url: '/api/comment/amount',
         headers: {
             authorization: this.authorizationHeader,
         },

@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { CommentValidatons } from './comment.validations';
+import { CommentValidations } from './comment.validations';
 import {
     TextTooShortError,
     CommentIdNotValidError,
     TextTooLongError,
     UserIdNotValidError,
-    VideoIdNotValidError,
+    ResourceIdNotValidError,
 } from '../../utils/errors/userErrors';
 import { IComment } from '../comment.interface';
 
@@ -13,7 +13,7 @@ export class CommentValidator {
 
     static canCreate(req: Request, res: Response, next: NextFunction) {
         next(
-            CommentValidator.validateVideo(req.body.video) ||
+            CommentValidator.validateVideo(req.body.resource) ||
             CommentValidator.validateParent(req.body.parent) ||
             CommentValidator.validateText(req.body.text) ||
             CommentValidator.validateUser(req.body.user),
@@ -48,11 +48,11 @@ export class CommentValidator {
     }
 
     private static validateText(text: string) {
-        if (CommentValidatons.isTextLengthTooShort(text)) {
+        if (CommentValidations.isTextLengthTooShort(text)) {
             return new TextTooShortError();
         }
 
-        if (CommentValidatons.isTextLengthTooLong(text)) {
+        if (CommentValidations.isTextLengthTooLong(text)) {
             return new TextTooLongError();
         }
 
@@ -60,7 +60,7 @@ export class CommentValidator {
     }
 
     private static validateId(id: string) {
-        if (!CommentValidatons.isIdValid(id)) {
+        if (!CommentValidations.isIdValid(id)) {
             return new CommentIdNotValidError();
         }
 
@@ -68,23 +68,23 @@ export class CommentValidator {
     }
 
     private static validateUser(user: string) {
-        if (!CommentValidatons.isUserValid(user)) {
+        if (!CommentValidations.isUserValid(user)) {
             return new UserIdNotValidError();
         }
 
         return undefined;
     }
 
-    private static validateVideo(video: string) {
-        if (!CommentValidatons.isVideoValid(video)) {
-            return new VideoIdNotValidError();
+    private static validateVideo(resource: string) {
+        if (!CommentValidations.isResourceValid(resource)) {
+            return new ResourceIdNotValidError();
         }
 
         return undefined;
     }
 
     private static validateParent(parent: string | null) {
-        if (!CommentValidatons.isParentValid(parent)) {
+        if (!CommentValidations.isParentValid(parent)) {
             return new CommentIdNotValidError();
         }
 
