@@ -51,7 +51,7 @@ export class ValidRequestMocks {
         params: {
             id: new Types.ObjectId(),
         },
-        body: this.comment,
+        body: { text: this.comment.text },
     });
 
     deleteById = createRequest({

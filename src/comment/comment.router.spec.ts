@@ -417,6 +417,12 @@ describe('Comment Module', function () {
 
                 returnedComments.push(await CommentManager.create(parentLessComment));
                 returnedComments.push(await CommentManager.create(parentLessComment2));
+                await CommentManager.create({
+                    parent: returnedComments[0].id,
+                    text: 'tt',
+                    user: 'a@v',
+                    resource: returnedComments[0].resource,
+                } as IComment);
             });
 
             it('Should return comments', function (done: MochaDone) {
@@ -435,6 +441,9 @@ describe('Comment Module', function () {
                         expect(res.body).to.be.of.length(2);
                         expect(res.body[0]).to.have.property('resource', parentLessComment.resource);
                         expect(res.body[1]).to.have.property('resource', parentLessComment2.resource);
+                        expect(res.body[1]).to.have.property('repliesAmount', 1);
+                        expect(res.body[0]).to.have.property('repliesAmount', 0);
+
 
                         done();
                     });
