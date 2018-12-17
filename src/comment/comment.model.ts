@@ -47,6 +47,7 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
     {
         autoIndex: false,
         timestamps: true,
+        versionKey: false,
         id: true,
         toObject: {
             virtuals: true,
@@ -59,6 +60,8 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
         toJSON: {
             virtuals: true,
             transform: (doc, ret) => {
+                delete ret._id;
+                
                 if (ret.parent) {
                     ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
                 }

@@ -109,7 +109,7 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('user', comment.user);
                         expect(res.body).to.have.property('parent', comment.parent);
 
-                        expect(res.body).to.have.property('_id');
+                        expect(res.body).to.have.property('id');
 
                         done();
                     });
@@ -170,7 +170,7 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('user');
                         expect(res.body).to.have.property('parent');
 
-                        expect(res.body).to.have.property('_id');
+                        expect(res.body).to.have.property('id');
 
                         done();
                     });
@@ -272,7 +272,7 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('user', comment.user);
                         expect(res.body).to.have.property('parent', comment.parent);
 
-                        expect(res.body).to.have.property('_id');
+                        expect(res.body).to.have.property('id');
 
                         done();
                     });
