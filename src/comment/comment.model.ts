@@ -61,12 +61,14 @@ const commentSchema: mongoose.Schema = new mongoose.Schema(
             virtuals: true,
             transform: (doc, ret) => {
                 delete ret._id;
-                
+
                 if (ret.parent) {
                     ret.parent = (ret.parent as mongoose.Types.ObjectId).toHexString();
                 }
             },
         },
     });
+
+commentSchema.index({ resource: 1, parent: -1 });
 
 export const CommentModel = mongoose.model<IComment & mongoose.Document>('Comment', commentSchema);
