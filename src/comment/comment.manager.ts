@@ -2,7 +2,7 @@ import { IComment } from './comment.interface';
 
 import { CommentRepository } from './comment.repository';
 
-export class CommentManager implements CommentRepository {
+export class CommentManager {
     static create(comment: IComment) {
         return CommentRepository.create(comment);
     }
@@ -47,18 +47,7 @@ export class CommentManager implements CommentRepository {
     }
 
     static async getRootComments(resourceId: string, startIndex: number, endIndex: number) {
-        const comments: IComment[] = await CommentRepository.getMany({ resource: resourceId, parent: null }, startIndex, endIndex);
-        const RepliesAmountPromise: Promise<number>[] = [];
-
-        comments.forEach((comment: IComment) => {
-            RepliesAmountPromise.push(CommentManager.getRepliesAmount(comment.id));
-        });
-
-        const RepliesAmount: number[] = await Promise.all(RepliesAmountPromise);
-
-        return comments.map((comment: IComment, index: number) => {
-            return { ...(comment as any).toJSON(), repliesAmount: RepliesAmount[index] };
-        });
+        return CommentRepository.getRootComments(resourceId, startIndex, endIndex);
     }
 
     static getReplies(parent: string, startIndex: number, endIndex: number) {

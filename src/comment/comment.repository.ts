@@ -39,6 +39,40 @@ export class CommentRepository {
         ).exec();
     }
 
+    static getRootComments(
+        resource: string,
+        startIndex: number = 0,
+        endIndex: number = 20,
+        sortOrder: string = '-',
+        sortBy: string = 'createdAt') {
+        return CommentModel.aggregate([
+            { $match: { resource, parent: null } },
+            { $skip: +startIndex },
+            { $limit: +endIndex - +startIndex },
+            { $sort: { createdAt: -1 } },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'parent',
+                    as: 'children',
+                },
+            },
+            {
+                $project: {
+                    _id: true,
+                    parent: true,
+                    text: true,
+                    user: true,
+                    resource: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    repliesAmount: { $size: '$children' },
+                },
+            },
+        ]);
+    }
+
     static getOne(commentFilter: Partial<IComment>)
         : Promise<IComment | null> {
         if (Object.keys(commentFilter).length === 0) {
