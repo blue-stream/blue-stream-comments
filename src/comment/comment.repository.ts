@@ -60,7 +60,8 @@ export class CommentRepository {
             },
             {
                 $project: {
-                    _id: true,
+                    id: '$_id',
+                    _id: false,
                     parent: true,
                     text: true,
                     user: true,
