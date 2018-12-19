@@ -47,9 +47,9 @@ export class CommentRepository {
         sortBy: string = 'createdAt') {
         return CommentModel.aggregate([
             { $match: { resource, parent: null } },
+            { $sort: { createdAt: -1 } },
             { $skip: +startIndex },
             { $limit: +endIndex - +startIndex },
-            { $sort: { createdAt: -1 } },
             {
                 $lookup: {
                     from: 'comments',
