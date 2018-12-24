@@ -1,6 +1,7 @@
 import { IComment } from './comment.interface';
 
 import { CommentRepository } from './comment.repository';
+import { CommentPublishBroker } from './comment.broker.publish';
 
 export class CommentManager {
     static create(comment: IComment) {
@@ -20,11 +21,19 @@ export class CommentManager {
         const RepliesPromise: Promise<IComment | null>[] = [];
 
         if (replies.length !== 0) {
+            const removedCommentsIds: string[] = [];
+            removedCommentsIds.push(id);
+
             replies.forEach((reply: any) => {
                 RepliesPromise.push(CommentManager.deleteById(reply._id));
+                removedCommentsIds.push(reply._id);
             });
 
+            CommentPublishBroker.publish('commentService.comment.remove.succeeded', { ids: removedCommentsIds });
             await Promise.all(RepliesPromise);
+
+        } else {
+            CommentPublishBroker.publish('commentService.comment.remove.succeeded', { id });
         }
 
         return CommentRepository.deleteById(id);

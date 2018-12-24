@@ -1,21 +1,16 @@
-// <RabbitMQ>
 import * as rabbit from '../utils/rabbit';
 import { CommentManager } from './comment.manager';
 import { IComment } from './comment.interface';
+import { CommentPublishBroker } from './comment.broker.publish';
 
-export class CommentBroker {
-
-    public static async publish(routingKey: string, message: any) {
-        rabbit.publish('application', routingKey, message);
-    }
-
+export class CommentSubscribeBroker {
     public static async subscribe() {
         rabbit.subscribe(
             'application',
             'topic',
             'comment-action-queue',
             'videoService.video.remove.succeeded',
-            CommentBroker.deleteMany,
+            CommentSubscribeBroker.deleteMany,
         );
     }
 
@@ -28,7 +23,7 @@ export class CommentBroker {
 
                 if (deleteSucceeded) {
                     const commentsIDs: (string | undefined)[] = commentsToRemove.map(comment => comment.id);
-                    CommentBroker.publish('commentService.comment.remove.succeeded', { ids: commentsIDs });
+                    CommentPublishBroker.publish('commentService.comment.remove.succeeded', { ids: commentsIDs });
                 }
             }
 

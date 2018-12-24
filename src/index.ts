@@ -4,7 +4,7 @@ import { Server } from './server';
 import { Logger } from './utils/logger';
 import { config } from './config';
 import { syslogSeverityLevels } from 'llamajs';
-import { CommentBroker } from './comment/comment.broker';
+import { CommentSubscribeBroker } from './comment/comment.broker.subscribe';
 
 process.on('uncaughtException', (err) => {
     console.error('Unhandled Exception', err.stack);
@@ -40,7 +40,7 @@ process.on('SIGINT', async () => {
     Logger.log(syslogSeverityLevels.Informational, 'Server Started', `Port: ${config.server.port}`);
 
     await rabbit.connect();
-    await CommentBroker.subscribe();
+    await CommentSubscribeBroker.subscribe();
 
     console.log('Starting server');
     const server: Server = Server.bootstrap();
