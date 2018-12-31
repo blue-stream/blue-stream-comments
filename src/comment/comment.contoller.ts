@@ -67,7 +67,7 @@ export class CommentController {
                 undefined && delete commentFilter[key as keyof IComment];
         });
 
-        res.json(await CommentManager.getMany(commentFilter, req.query.startIndex, req.query.endIndex));
+        res.json(await CommentManager.getMany(commentFilter, req.query.startIndex, req.query.endIndex, req.query.sortOrder, req.query.sortBy));
     }
 
     static async getAmount(req: Request, res: Response) {

@@ -51,8 +51,8 @@ export class CommentManager {
         return CommentRepository.getOne(commentFilter);
     }
 
-    static getMany(commentFilter: Partial<IComment>, startIndex: number, endIndex: number) {
-        return CommentRepository.getMany(commentFilter, startIndex, endIndex);
+    static getMany(commentFilter: Partial<IComment>, startIndex?: number, endIndex?: number, sortOrder?: '-' | '', sortBy?: string) {
+        return CommentRepository.getMany(commentFilter, startIndex, endIndex, sortOrder, sortBy);
     }
 
     static async getRootComments(resourceId: string, startIndex: number, endIndex: number) {
