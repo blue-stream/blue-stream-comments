@@ -31,7 +31,7 @@ export class ValidRequestMocks {
 
     readonly commentFilter = this.comment;
 
-    authorizationHeader = `Bearer ${sign('mock-user', config.authentication.secret)}`;
+    authorizationHeader = `Bearer ${sign({ id: 'a@a' }, config.authentication.secret)}`;
 
     create = createRequest({
         method: 'POST',
@@ -40,6 +40,7 @@ export class ValidRequestMocks {
             authorization: this.authorizationHeader,
         },
         body: this.comment,
+        user: { id: 'a@a' },
     });
 
     updateTextById = createRequest({

@@ -69,7 +69,7 @@ describe('Comment Module', function () {
 
     const commentArr = [comment, comment2, comment3];
 
-    const authorizationHeader = `Bearer ${sign('mock-user', config.authentication.secret)}`;
+    const authorizationHeader = `Bearer ${sign({ id: 'a@a' }, config.authentication.secret)}`;
 
     Object.freeze(comment);
     Object.freeze(comment2);

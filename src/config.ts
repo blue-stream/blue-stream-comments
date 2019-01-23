@@ -36,7 +36,7 @@ export const config = {
         allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:4200'],
     },
     authentication: {
-        required: false,
+        required: true,
         secret: process.env.SECRET_KEY || 'bLue5tream@2018',
     },
 };

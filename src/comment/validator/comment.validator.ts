@@ -7,7 +7,6 @@ import {
     UserIdNotValidError,
     ResourceIdNotValidError,
 } from '../../utils/errors/userErrors';
-import { IComment } from '../comment.interface';
 
 export class CommentValidator {
 
@@ -16,7 +15,7 @@ export class CommentValidator {
             CommentValidator.validateResource(req.body.resource) ||
             CommentValidator.validateParent(req.body.parent) ||
             CommentValidator.validateText(req.body.text) ||
-            CommentValidator.validateUser(req.body.user),
+            CommentValidator.validateUser(req.user.id),
         );
     }
 

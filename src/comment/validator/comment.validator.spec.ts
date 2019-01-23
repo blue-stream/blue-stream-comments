@@ -43,7 +43,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is undefined', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.user = undefined;
+                invalidRequestMock.user.id = undefined;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -53,7 +53,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is null', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.user = null;
+                invalidRequestMock.user.id = null;
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;
@@ -63,7 +63,7 @@ describe('Comment Validator Middleware', function () {
 
             it('Should throw an UserIdNotValidError When user is invalid', function () {
                 const invalidRequestMock = new ValidRequestMocks().create;
-                invalidRequestMock.body.user = 'a';
+                invalidRequestMock.user.id = 'a';
 
                 CommentValidator.canCreate(invalidRequestMock, responseMock, (error: Error) => {
                     expect(error).to.exist;

@@ -7,7 +7,8 @@ import { IComment } from './comment.interface';
 
 export class CommentController {
     static async create(req: Request, res: Response) {
-        res.json(await CommentManager.create(req.body));
+        const comment = { ...req.body, user: req.user.id };
+        res.json(await CommentManager.create(comment));
     }
 
     static async updateTextById(req: Request, res: Response) {
