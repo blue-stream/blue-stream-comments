@@ -9,11 +9,7 @@ export class CommentManager {
         if (comment.parent) {
             const parent = await CommentManager.getById(comment.parent);
 
-            if (parent) {
-                return CommentRepository.create(comment);
-            }
-
-            throw new UnknownParentError();
+            if (!parent) throw new UnknownParentError();
         }
 
         return CommentRepository.create(comment);
