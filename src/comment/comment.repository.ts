@@ -7,8 +7,9 @@ export class CommentRepository {
     static create(comment: IComment)
         : Promise<IComment> {
         if (!comment.parent) {
-            comment.parent = null;
+            return CommentModel.create({ ...comment, parent: null });
         }
+
         return CommentModel.create(comment);
     }
 

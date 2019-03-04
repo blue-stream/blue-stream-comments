@@ -42,6 +42,12 @@ export class CommentIdNotValidError extends CommentNotValidError {
     }
 }
 
+export class UnknownParentError extends UserError {
+    constructor(message?: string) {
+        super(message || 'Specified parent was not found', 404);
+    }
+}
+
 export class UserIdNotValidError extends CommentNotValidError {
     constructor(message?: string) {
         super(message || 'User\'s ID is not valid');

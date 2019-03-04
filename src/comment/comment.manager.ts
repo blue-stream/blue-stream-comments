@@ -2,9 +2,20 @@ import { IComment } from './comment.interface';
 
 import { CommentRepository } from './comment.repository';
 import { CommentPublishBroker } from './comment.broker.publish';
+import { UnknownParentError } from '../utils/errors/userErrors';
 
 export class CommentManager {
-    static create(comment: IComment) {
+    static async create(comment: IComment) {
+        if (comment.parent) {
+            const parent = await CommentManager.getById(comment.parent);
+
+            if (parent) {
+                return CommentRepository.create(comment);
+            }
+
+            throw new UnknownParentError();
+        }
+
         return CommentRepository.create(comment);
     }
 

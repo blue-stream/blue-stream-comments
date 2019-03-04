@@ -13,6 +13,7 @@ import {
     TextTooShortError,
     UserIdNotValidError,
     ResourceIdNotValidError,
+    UnknownParentError,
 } from '../utils/errors/userErrors';
 import { config } from '../config';
 import { CommentManager } from './comment.manager';
@@ -25,7 +26,6 @@ describe('Comment Module', function () {
     const invalidUser: string = 'a';
     const invalidComment: Partial<IComment> = {
         resource: invalidId,
-        parent: invalidId,
         text: '1'.repeat(config.validator.comment.text.maxLength + 1),
         user: invalidUser,
     };
@@ -33,23 +33,34 @@ describe('Comment Module', function () {
     const commentDataToUpdate: Partial<IComment> = { text: 'updated text' };
     const unexistingComment: Partial<IComment> = { user: 'c@c' };
     const unknownProperty: Object = { unknownProperty: true };
+
+    const parent: IComment = {
+        resource: (new mongoose.Types.ObjectId()).toHexString(),
+        text: 'parent text',
+        user: 'a@d',
+    };
+
+    const fakeParentComment: IComment = {
+        parent: (new mongoose.Types.ObjectId()).toHexString(),
+        resource: (new mongoose.Types.ObjectId()).toHexString(),
+        text: 'parent text',
+        user: 'a@d',
+    };
+
     const comment: IComment = {
         resource: (new mongoose.Types.ObjectId()).toHexString(),
-        parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text',
         user: 'a@a',
     };
 
     const comment2: IComment = {
         resource: (new mongoose.Types.ObjectId()).toHexString(),
-        parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text 2',
         user: 'a@b',
     };
 
     const comment3: IComment = {
         resource: (new mongoose.Types.ObjectId()).toHexString(),
-        parent: (new mongoose.Types.ObjectId()).toHexString(),
         text: 'comment text 3',
         user: 'b@b',
     };
@@ -67,7 +78,7 @@ describe('Comment Module', function () {
         user: 'a@b',
     };
 
-    const commentArr = [comment, comment2, comment3];
+    const commentArr: IComment[] = [comment, comment2, comment3];
 
     const authorizationHeader = `Bearer ${sign({ id: 'a@a' }, config.authentication.secret)}`;
 
@@ -107,7 +118,6 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('resource', comment.resource);
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user', comment.user);
-                        expect(res.body).to.have.property('parent', comment.parent);
 
                         expect(res.body).to.have.property('id');
 
@@ -121,11 +131,10 @@ describe('Comment Module', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
             });
-            it('Should return error status when resource is invalid', function (done: MochaDone) {
+            it('Should return TextTooLongError when text is too long', function (done: MochaDone) {
                 request(server.app)
                     .post('/api/comment/')
-                    .send({ comment: invalidComment })
-
+                    .send(invalidComment)
                     .set({ authorization: authorizationHeader })
                     .expect(400)
                     .expect('Content-Type', /json/)
@@ -134,8 +143,26 @@ describe('Comment Module', function () {
                         expect(res.status).to.equal(400);
                         expect(res).to.have.property('body');
                         expect(res.body).to.be.an('object');
-                        expect(res.body).to.have.property('type', ResourceIdNotValidError.name);
-                        expect(res.body).to.have.property('message', new ResourceIdNotValidError().message);
+                        expect(res.body).to.have.property('type', TextTooLongError.name);
+                        expect(res.body).to.have.property('message', new TextTooLongError().message);
+
+                        done();
+                    });
+            });
+            it('Should return UnknownParentError when comment\'s parent does not exists', function (done: MochaDone) {
+                request(server.app)
+                    .post('/api/comment/')
+                    .send(fakeParentComment)
+                    .set({ authorization: authorizationHeader })
+                    .expect(404)
+                    .expect('Content-Type', /json/)
+                    .end((error: Error, res: request.Response) => {
+                        expect(error).to.not.exist;
+                        expect(res.status).to.equal(404);
+                        expect(res).to.have.property('body');
+                        expect(res.body).to.be.an('object');
+                        expect(res.body).to.have.property('type', UnknownParentError.name);
+                        expect(res.body).to.have.property('message', new UnknownParentError().message);
 
                         done();
                     });
@@ -168,7 +195,6 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('resource');
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user');
-                        expect(res.body).to.have.property('parent');
 
                         expect(res.body).to.have.property('id');
 
@@ -270,7 +296,6 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('resource', comment.resource);
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user', comment.user);
-                        expect(res.body).to.have.property('parent', comment.parent);
 
                         expect(res.body).to.have.property('id');
 
@@ -457,9 +482,10 @@ describe('Comment Module', function () {
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
-                returnedComments.push(await CommentManager.create(commentArr[0]));
-                returnedComments.push(await CommentManager.create(commentArr[0]));
-                returnedComments.push(await CommentManager.create(commentArr[0]));
+                const parentComment = await CommentManager.create(parent);
+                returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id }));
+                returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id }));
+                returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id}));
             });
 
             it('Should return replies', function (done: MochaDone) {

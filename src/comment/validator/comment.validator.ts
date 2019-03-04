@@ -89,16 +89,4 @@ export class CommentValidator {
 
         return undefined;
     }
-
-    private static getNextValueFromArray(validationsArray: (Error | undefined)[]) {
-        let nextValue: Error | undefined;
-
-        for (let index = 0; index < validationsArray.length; index++) {
-            if (validationsArray[index] !== undefined) {
-                nextValue = validationsArray[index];
-            }
-        }
-
-        return nextValue;
-    }
 }
