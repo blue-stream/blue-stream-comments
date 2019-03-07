@@ -89,7 +89,7 @@ describe('Comment Module', function () {
 
     before(async function () {
 
-        await mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, { useNewUrlParser: true });
+        await mongoose.connect(config.db.connectionString, { useNewUrlParser: true });
         server = Server.bootstrap();
     });
 
@@ -485,7 +485,7 @@ describe('Comment Module', function () {
                 const parentComment = await CommentManager.create(parent);
                 returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id }));
                 returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id }));
-                returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id}));
+                returnedComments.push(await CommentManager.create({ ...commentArr[0], parent: parentComment.id }));
             });
 
             it('Should return replies', function (done: MochaDone) {
