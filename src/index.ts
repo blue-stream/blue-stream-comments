@@ -31,11 +31,11 @@ process.on('SIGINT', async () => {
 
 (async () => {
     await mongoose.connect(
-        `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
+        config.db.connectionString,
         { useNewUrlParser: true },
     );
 
-    console.log(`[MongoDB] connected to port ${config.db.port}`);
+    console.log(`[MongoDB] connected`);
     Logger.configure();
     Logger.log(syslogSeverityLevels.Informational, 'Server Started', `Port: ${config.server.port}`);
 
