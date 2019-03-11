@@ -19,7 +19,7 @@ export class CommentManager {
         const returnedComment = await CommentManager.getById(id);
 
         if (!returnedComment) throw new CommentNotFoundError();
-        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+        if (returnedComment.user !== requestingUser && !isSysAdmin) throw new UserIsNotCommentOwnerError();
 
         return CommentRepository.updateById(id, { text } as IComment);
     }
@@ -28,7 +28,7 @@ export class CommentManager {
         const comment: IComment | null = await CommentManager.getById(id);
 
         if (!comment) throw new CommentNotFoundError();
-        if (comment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+        if (comment.user !== requestingUser && !isSysAdmin) throw new UserIsNotCommentOwnerError();
 
         const replies: IComment[] = await CommentManager.getReplies(id, 0, 0);
         const RepliesPromise: Promise<IComment | null>[] = [];

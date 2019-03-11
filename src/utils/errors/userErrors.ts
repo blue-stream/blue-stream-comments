@@ -54,8 +54,8 @@ export class UserIdNotValidError extends CommentNotValidError {
     }
 }
 
-export class UserIsNotCommentOwnerError extends CommentNotValidError {
+export class UserIsNotCommentOwnerError extends UserError {
     constructor(message?: string) {
-        super(message || 'User is not commen\'s owner');
+        super(message || 'User is not commen\'s owner', 403);
     }
 }
