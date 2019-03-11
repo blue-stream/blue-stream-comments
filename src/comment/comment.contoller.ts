@@ -12,7 +12,7 @@ export class CommentController {
     }
 
     static async updateTextById(req: Request, res: Response) {
-        const updated = await CommentManager.updateTextById(req.params.id, req.body.text);
+        const updated = await CommentManager.updateTextById(req.params.id, req.body.text, req.user.id, req.user.isSysAdmin);
         if (!updated) {
             throw new CommentNotFoundError();
         }
@@ -21,7 +21,7 @@ export class CommentController {
     }
 
     static async deleteById(req: Request, res: Response) {
-        const deleted = await CommentManager.deleteById(req.params.id);
+        const deleted = await CommentManager.deleteById(req.params.id, req.user.id, req.user.isSysAdmin);
         if (!deleted) {
             throw new CommentNotFoundError();
         }

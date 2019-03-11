@@ -2,7 +2,7 @@ import { IComment } from './comment.interface';
 
 import { CommentRepository } from './comment.repository';
 import { CommentPublishBroker } from './comment.broker.publish';
-import { UnknownParentError } from '../utils/errors/userErrors';
+import { UnknownParentError, UserIsNotCommentOwnerError, CommentNotFoundError } from '../utils/errors/userErrors';
 
 export class CommentManager {
     static async create(comment: IComment) {
@@ -15,15 +15,30 @@ export class CommentManager {
         return CommentRepository.create(comment);
     }
 
-    static updateById(id: string, comment: Partial<IComment>) {
+    static async updateById(id: string, comment: Partial<IComment>, requestingUser: string, isSysAdmin: boolean) {
+        const returnedComment = await CommentManager.getById(id);
+
+        if (!returnedComment) throw new CommentNotFoundError();
+        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+
         return CommentRepository.updateById(id, comment);
     }
 
-    static updateTextById(id: string, text: string): Promise<IComment | null> {
+    static async updateTextById(id: string, text: string, requestingUser: string, isSysAdmin: boolean): Promise<IComment | null> {
+        const returnedComment = await CommentManager.getById(id);
+
+        if (!returnedComment) throw new CommentNotFoundError();
+        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+
         return CommentRepository.updateById(id, { text } as IComment);
     }
 
-    static async deleteById(id: string) {
+    static async deleteById(id: string, requestingUser: string, isSysAdmin: boolean) {
+        const comment: IComment | null = await CommentManager.getById(id);
+
+        if (!comment) throw new CommentNotFoundError();
+        if (comment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+
         const replies: IComment[] = await CommentManager.getReplies(id, 0, 0);
         const RepliesPromise: Promise<IComment | null>[] = [];
 
@@ -32,7 +47,7 @@ export class CommentManager {
             removedCommentsIds.push(id);
 
             replies.forEach((reply: any) => {
-                RepliesPromise.push(CommentManager.deleteById(reply._id));
+                RepliesPromise.push(CommentManager.deleteById(reply._id, requestingUser, true));
                 removedCommentsIds.push(reply._id);
             });
 

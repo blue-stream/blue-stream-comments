@@ -53,3 +53,9 @@ export class UserIdNotValidError extends CommentNotValidError {
         super(message || 'User\'s ID is not valid');
     }
 }
+
+export class UserIsNotCommentOwnerError extends CommentNotValidError {
+    constructor(message?: string) {
+        super(message || 'User is not commen\'s owner');
+    }
+}
