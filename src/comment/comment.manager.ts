@@ -15,20 +15,11 @@ export class CommentManager {
         return CommentRepository.create(comment);
     }
 
-    static async updateById(id: string, comment: Partial<IComment>, requestingUser: string, isSysAdmin: boolean) {
-        const returnedComment = await CommentManager.getById(id);
-
-        if (!returnedComment) throw new CommentNotFoundError();
-        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
-
-        return CommentRepository.updateById(id, comment);
-    }
-
     static async updateTextById(id: string, text: string, requestingUser: string, isSysAdmin: boolean): Promise<IComment | null> {
         const returnedComment = await CommentManager.getById(id);
 
         if (!returnedComment) throw new CommentNotFoundError();
-        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+        if (returnedComment.user !== requestingUser && !isSysAdmin) throw new UserIsNotCommentOwnerError();
 
         return CommentRepository.updateById(id, { text } as IComment);
     }
@@ -37,7 +28,7 @@ export class CommentManager {
         const comment: IComment | null = await CommentManager.getById(id);
 
         if (!comment) throw new CommentNotFoundError();
-        if (comment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
+        if (comment.user !== requestingUser && !isSysAdmin) throw new UserIsNotCommentOwnerError();
 
         const replies: IComment[] = await CommentManager.getReplies(id, 0, 0);
         const RepliesPromise: Promise<IComment | null>[] = [];

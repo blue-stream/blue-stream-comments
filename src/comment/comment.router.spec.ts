@@ -14,6 +14,7 @@ import {
     UserIdNotValidError,
     ResourceIdNotValidError,
     UnknownParentError,
+    UserIsNotCommentOwnerError,
 } from '../utils/errors/userErrors';
 import { config } from '../config';
 import { CommentManager } from './comment.manager';
@@ -172,11 +173,14 @@ describe('Comment Module', function () {
 
     describe('#PUT /api/comment/:id', function () {
         let returnedComment: any;
+        let returnedComment2: any;
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
                 returnedComment = await CommentManager.create(comment);
+                returnedComment2 = await CommentManager.create(comment2);
+
             });
 
             it('Should return updated comment', function (done: MochaDone) {
@@ -195,7 +199,6 @@ describe('Comment Module', function () {
                         expect(res.body).to.have.property('resource');
                         expect(res.body).to.have.property('text', comment.text);
                         expect(res.body).to.have.property('user');
-
                         expect(res.body).to.have.property('id');
 
                         done();
@@ -206,7 +209,6 @@ describe('Comment Module', function () {
                 request(server.app)
                     .put(`/api/comment/${new mongoose.Types.ObjectId()}`)
                     .send(comment)
-
                     .set({ authorization: authorizationHeader })
                     .expect(404)
                     .expect('Content-Type', /json/)
@@ -217,6 +219,25 @@ describe('Comment Module', function () {
                         expect(res.body).to.be.an('object');
                         expect(res.body).to.have.property('type', CommentNotFoundError.name);
                         expect(res.body).to.have.property('message', new CommentNotFoundError().message);
+
+                        done();
+                    });
+            });
+
+            it('Should return error status when user is not comment\'s owner', function (done: MochaDone) {
+                request(server.app)
+                    .put(`/api/comment/${returnedComment2.id}`)
+                    .send(comment2)
+                    .set({ authorization: authorizationHeader })
+                    .expect(403)
+                    .expect('Content-Type', /json/)
+                    .end((error: Error, res: request.Response) => {
+                        expect(error).to.not.exist;
+                        expect(res.status).to.equal(403);
+                        expect(res).to.have.property('body');
+                        expect(res.body).to.be.an('object');
+                        expect(res.body).to.have.property('type', UserIsNotCommentOwnerError.name);
+                        expect(res.body).to.have.property('message', new UserIsNotCommentOwnerError().message);
 
                         done();
                     });
@@ -272,11 +293,15 @@ describe('Comment Module', function () {
 
     describe('#DELETE /api/comment/:id', function () {
         let returnedComment: any;
+        let returnedComment2: any;
+
 
         context('When request is valid', function () {
             beforeEach(async function () {
                 await mongoose.connection.db.dropDatabase();
                 returnedComment = await CommentManager.create(comment);
+                returnedComment2 = await CommentManager.create(comment2);
+
             });
 
             it('Should return updated comment', function (done: MochaDone) {
@@ -317,6 +342,25 @@ describe('Comment Module', function () {
                         expect(res.body).to.be.an('object');
                         expect(res.body).to.have.property('type', CommentNotFoundError.name);
                         expect(res.body).to.have.property('message', new CommentNotFoundError().message);
+
+                        done();
+                    });
+            });
+
+            it('Should return error status when user is not comment\'s owner', function (done: MochaDone) {
+                request(server.app)
+                    .delete(`/api/comment/${returnedComment2.id}`)
+                    .send(comment2)
+                    .set({ authorization: authorizationHeader })
+                    .expect(403)
+                    .expect('Content-Type', /json/)
+                    .end((error: Error, res: request.Response) => {
+                        expect(error).to.not.exist;
+                        expect(res.status).to.equal(403);
+                        expect(res).to.have.property('body');
+                        expect(res.body).to.be.an('object');
+                        expect(res.body).to.have.property('type', UserIsNotCommentOwnerError.name);
+                        expect(res.body).to.have.property('message', new UserIsNotCommentOwnerError().message);
 
                         done();
                     });
