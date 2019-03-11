@@ -15,15 +15,6 @@ export class CommentManager {
         return CommentRepository.create(comment);
     }
 
-    static async updateById(id: string, comment: Partial<IComment>, requestingUser: string, isSysAdmin: boolean) {
-        const returnedComment = await CommentManager.getById(id);
-
-        if (!returnedComment) throw new CommentNotFoundError();
-        if (returnedComment.user !== requestingUser || !isSysAdmin) throw new UserIsNotCommentOwnerError();
-
-        return CommentRepository.updateById(id, comment);
-    }
-
     static async updateTextById(id: string, text: string, requestingUser: string, isSysAdmin: boolean): Promise<IComment | null> {
         const returnedComment = await CommentManager.getById(id);
 
