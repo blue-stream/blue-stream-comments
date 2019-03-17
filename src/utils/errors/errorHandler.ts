@@ -4,7 +4,7 @@ import { log } from '../logger';
 
 export function userErrorHandler(error: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
     if (error instanceof UserError) {
-        log('info' , 'User Error', `${error.name} was thrown with status ${error.status} and message ${error.message}`, '', req.user.id);
+        log('info' , 'User Error', `${error.name} was thrown with status ${error.status} and message ${error.message}`, '', req.user ? req.user.id : 'unknown');
 
         res.status(error.status).send({
             type: error.name,
