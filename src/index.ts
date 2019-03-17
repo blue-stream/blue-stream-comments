@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose';
 import * as rabbit from './utils/rabbit';
 import { Server } from './server';
-import { Logger } from './utils/logger';
+import { log } from './utils/logger';
 import { config } from './config';
-import { syslogSeverityLevels } from 'llamajs';
 import { CommentSubscribeBroker } from './comment/comment.broker.subscribe';
 
 process.on('uncaughtException', (err) => {
@@ -36,8 +35,8 @@ process.on('SIGINT', async () => {
     );
 
     console.log(`[MongoDB] connected`);
-    Logger.configure();
-    Logger.log(syslogSeverityLevels.Informational, 'Server Started', `Port: ${config.server.port}`);
+
+    log('verbose' , 'Server Started', `Port: ${config.server.port}`);
 
     await rabbit.connect();
     await CommentSubscribeBroker.subscribe();
