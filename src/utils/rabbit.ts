@@ -1,5 +1,6 @@
 import * as amqplib from 'amqplib';
 import { config } from '../config';
+import { log } from './logger';
 
 let connection: amqplib.Connection;
 let publishChannel: amqplib.Channel;
@@ -30,6 +31,22 @@ export async function connect() {
     const { username, password, host, port } = config.rabbitMQ;
     connection = await amqplib.connect(`amqp://${username}:${password}@${host}:${port}`);
 
+    connection.on('error', (error) => {
+        console.log('[RabbitMQ] connection error');
+        log('error', 'RabbitMQ Connection Error', 'Service is shutting down due to RabbitMQ connection error', '', 'unknown', error);
+        console.log(error);
+
+        process.exit(1);
+    });
+
+    connection.on('close', (error) => {
+        console.log('[RabbitMQ] connection close');
+        log('error', 'RabbitMQ Connection close', 'Service is shutting down due to RabbitMQ connection close', '', 'unknown', error);
+        console.log(error);
+
+        process.exit(1);
+    });
+
     console.log(`[RabbitMQ] connected on port ${port}`);
 
     return connection;
@@ -54,6 +71,7 @@ export async function subscribe(
     }
 
     const channel = await connection.createChannel();
+
     await channel.assertExchange(exchange, type, options.exchange);
 
     if (options.channel.prefetch) {
@@ -61,6 +79,22 @@ export async function subscribe(
     }
 
     const assertedQueue = await channel.assertQueue(queue, options.queue);
+
+    channel.on('error', (error) => {
+        console.log('[RabbitMQ] channel error');
+        log('error', 'RabbitMQ Channel Error', 'Service is shutting down due to RabbitMQ channel error', '', 'unknown', error);
+        console.log(error);
+
+        process.exit(1);
+    });
+
+    channel.on('close', (error) => {
+        console.log('[RabbitMQ] channel close');
+        log('error', 'RabbitMQ Channel Close', 'Service is shutting down due to RabbitMQ channel close', '', 'unknown', error);
+        console.log(error);
+
+        process.exit(1);
+    });
 
     await channel.bindQueue(assertedQueue.queue, exchange, pattern);
 
@@ -92,6 +126,23 @@ export async function publish(
 ) {
     if (!publishChannel) {
         publishChannel = await connection.createChannel();
+
+        publishChannel.on('error', (error) => {
+            console.log('[RabbitMQ] channel error');
+            log('error', 'RabbitMQ Channel Error', 'Service is shutting down due to RabbitMQ channel error', '', 'unknown', error);
+            console.log(error);
+
+            process.exit(1);
+        });
+
+        publishChannel.on('close', (error) => {
+            console.log('[RabbitMQ] channel close');
+            log('error', 'RabbitMQ Channel Close', 'Service is shutting down due to RabbitMQ channel close', '', 'unknown', error);
+            console.log(error);
+
+            process.exit(1);
+        });
+
         await publishChannel.assertExchange(exchange, type, {
             durable: true,
         });
